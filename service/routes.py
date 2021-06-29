@@ -33,7 +33,7 @@ def index():
         jsonify(
             name="E-commerce Supplier REST API Service",
             version="1.0",
-            path=url_for("list_suppliers", _external=True)
+            #path=url_for("list_suppliers", _external=True)
         ),
         status.HTTP_200_OK
     )

@@ -27,7 +27,6 @@ class TestSupplierModel(unittest.TestCase):
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        print("test app config", app.config["SQLALCHEMY_DATABASE_URI"])
         Supplier.init_db(app)
 
     @classmethod
@@ -109,3 +108,56 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(supplier.available, suppliers[3].available)
         self.assertEqual(supplier.product_list, suppliers[3].product_list)
         self.assertEqual(supplier.rating, suppliers[3].rating)
+
+    def test_find_by_name(self):
+        """ Test find a supplier by supplier name """
+        suppliers = SupplierFactory.create_batch(3)
+        for supplier in suppliers:
+            supplier.create()
+        logging.debug(suppliers)
+
+        self.assertEqual(len(Supplier.all()), 3)
+        supplier = Supplier.find_by_name(suppliers[1].name)
+        self.assertNotEqual(supplier[0], None)
+        self.assertEqual(supplier[0].id, suppliers[1].id)
+        self.assertEqual(supplier[0].name, suppliers[1].name)
+        self.assertEqual(supplier[0].phone, suppliers[1].phone)
+        self.assertEqual(supplier[0].address, suppliers[1].address)
+        self.assertEqual(supplier[0].available, suppliers[1].available)
+        self.assertEqual(supplier[0].product_list, suppliers[1].product_list)
+        self.assertEqual(supplier[0].rating, suppliers[1].rating)
+
+    def test_find_by_availability(self):
+        """Test find all suppliers with given availability flag"""
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
+
+        suppliers = Supplier.find_by_availability(False)
+        supplier_list = [supplier for supplier in suppliers]
+        self.assertEqual(len(supplier_list), 1)
+        
+    def test_find_by_product(self):
+        """Test find all suppliers with given product id"""
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
+
+        suppliers = Supplier.find_by_product(4)
+        self.assertNotEqual(suppliers[0], None)
+        self.assertEqual(suppliers[0].name, "Graves, Thompson and Pena")
+        self.assertEqual(suppliers[0].phone, "620-179-7652")
+        self.assertEqual(suppliers[0].address, "5312 Danielle Spurs Apt. 017\nNorth James, SD 47183")
+        self.assertEqual(suppliers[0].available, True)
+        self.assertEqual(suppliers[0].product_list, [1,2,4,5])
+        self.assertEqual(suppliers[0].rating, 3.5)
+
+    def test_find_by_greater_rating(self):
+        """Test find all suppliers with rating higher than the given rating"""
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
+
+        suppliers = Supplier.find_by_greater_rating(3.5)
+        supplier_list = [supplier for supplier in suppliers]
+        self.assertEqual(len(supplier_list), 2)
