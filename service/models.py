@@ -31,7 +31,6 @@ class DataValidationError(Exception):
 
     pass
 
-
 class Supplier(db.Model):
     """
     Class that represents a supplier
@@ -119,6 +118,7 @@ class Supplier(db.Model):
         """ Initializes the database session """
         logger.info("Initializing database")
         cls.app = app
+        print("inside init_db", app.config["SQLALCHEMY_DATABASE_URI"])
         # This is where we initialize SQLAlchemy from the Flask app
         db.init_app(app)
         app.app_context().push()

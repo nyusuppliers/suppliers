@@ -57,35 +57,3 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
-
-######################################################################
-# LIST ALL SUPPLIERS
-######################################################################
-@app.route("/suppliers", methods=["GET"])
-def list_suppliers():
-    app.logger.info("Request for all supplier list")
-    suppliers = []
-    suppliers = Supplier.all()
-
-    results = [Supplier.serialize() for supplier in suppliers]
-    app.logger.info("Returning %d suppliers", len(results))
-    return make_response(jsonify(results), status.HTTP_200_OK)
-
-
-######################################################################
-# ADD A NEW PET
-######################################################################
-@app.route("/suppliers", methods=["POST"])
-def create_pets():
-    app.logger.info("Create a new supplier")
-    check_content_type("application/json")
-    supplier = Supplier()
-    supplier.deserialize(request.get_json())
-    supplier.create()
-    message = supplier.serialize()
-    location_url = url_for("get_supplier", supplier_id=supplier.id, _external=True)
-
-    app.logger.info("Supplier with ID [%s] created.", supplier.id)
-    return make_response(
-        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-    )

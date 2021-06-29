@@ -27,6 +27,7 @@ class TestSupplierModel(unittest.TestCase):
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
+        print("test app config", app.config["SQLALCHEMY_DATABASE_URI"])
         Supplier.init_db(app)
 
     @classmethod
