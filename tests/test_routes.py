@@ -7,11 +7,22 @@ Test cases can be run with the following:
 """
 import os
 import logging
+from typing import SupportsRound
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from flask_api import status  # HTTP Status Codes
 from service.models import db
 from service.routes import app, init_db
+from .factories import SupplierFactory
+from service.models import Supplier, DataValidationError, db
+from service import status
+
+DATABASE_URI = os.getenv(
+    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
+)
+ONTENT_TYPE_JSON = "application/json"
+BASE_URL = "/suppliers"
+
 
 ######################################################################
 #  T E S T   C A S E S
@@ -22,20 +33,27 @@ class TestYourResourceServer(TestCase):
     @classmethod
     def setUpClass(cls):
         """ This runs once before the entire test suite """
-        pass
+        app.config["TESTING"] = True
+        app.config["DEBUG"] = False
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        app.logger.setLevel(logging.CRITICAL)
+        Supplier.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
         """ This runs once after the entire test suite """
-        pass
+        db.session.close()
 
     def setUp(self):
         """ This runs before each test """
+        db.drop_all()
+        db.create_all()
         self.app = app.test_client()
 
     def tearDown(self):
         """ This runs after each test """
-        pass
+        db.session.remove()
+        db.drop_all()
 
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
@@ -45,3 +63,31 @@ class TestYourResourceServer(TestCase):
         """ Test index call """
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], "E-commerce Supplier REST API Service")
+
+    def test_create_suppliers(self):
+        """Test create new supplier service call"""
+        supplier = SupplierFactory()
+        logging.debug(supplier)
+        resp = self.app.post(
+            BASE_URL, json=supplier.serialize(), content_type=ONTENT_TYPE_JSON
+        )
+        # Check the response code is 201
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # # Make sure location header is set. Location is the url to get the data
+        # # Location is currently not set as get_supplier service has not defined yet
+        # location = resp.headers.get("Location", None)
+        # self.assertIsNotNone(location)
+        
+        # Check data correctness 
+        new_supplier = resp.get_json()
+        self.assertEqual(new_supplier["name"], supplier.name, "Name do not match")
+        self.assertEqual(new_supplier["phone"], supplier.phone, "Phone number do not match")
+        self.assertEqual(new_supplier["address"], supplier.address, "Address do not match")
+        self.assertEqual(new_supplier["available"], supplier.available, "Availability Flag do not match")
+        self.assertEqual(new_supplier["product_list"], supplier.product_list, "Product List do not match")
+        self.assertEqual(new_supplier["rating"], supplier.rating, "Rating do not match")
+
+
+

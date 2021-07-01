@@ -89,23 +89,18 @@ def get_suppliers(supplier_id):
 ######################################################################
 @app.route("/suppliers", methods=["POST"])
 def create_suppliers():
-    # """
-    # Creates a Pet
-    # This endpoint will create a Pet based the data in the body that is posted
-    # """
-    # app.logger.info("Request to create a pet")
-    # check_content_type("application/json")
-    # pet = Pet()
-    # pet.deserialize(request.get_json())
-    # pet.create()
-    # message = pet.serialize()
-    # location_url = url_for("get_pets", pet_id=pet.id, _external=True)
+    app.logger.info("Create a new supplier")
+    check_content_type("application/json")
+    supplier = Supplier()
+    supplier.deserialize(request.get_json())
+    supplier.create()
+    message = supplier.serialize()
+    #location_url = url_for("get_supplier", supplier_id=supplier.id, _external=True)
 
-    # app.logger.info("Pet with ID [%s] created.", pet.id)
+    app.logger.info("Supplier with ID [%s] created.", supplier.id)
     return make_response(
-        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+        jsonify(message), status.HTTP_201_CREATED
     )
-
 
 ######################################################################
 # UPDATE AN EXISTING SUPPLIER
