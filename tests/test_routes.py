@@ -20,7 +20,7 @@ from service import status
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-ONTENT_TYPE_JSON = "application/json"
+CONTENT_TYPE_JSON = "application/json"
 BASE_URL = "/suppliers"
 
 
@@ -66,12 +66,12 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], "E-commerce Supplier REST API Service")
 
-    def test_create_suppliers(self):
+    def test_create_supplier(self):
         """Test create new supplier service call"""
         supplier = SupplierFactory()
         logging.debug(supplier)
         resp = self.app.post(
-            BASE_URL, json=supplier.serialize(), content_type=ONTENT_TYPE_JSON
+            BASE_URL, json=supplier.serialize(), content_type=CONTENT_TYPE_JSON
         )
         # Check the response code is 201
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -89,5 +89,28 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_supplier["product_list"], supplier.product_list, "Product List do not match")
         self.assertEqual(new_supplier["rating"], supplier.rating, "Rating do not match")
 
+    def _create_suppliers(self, count):
+        """Factory method to create pets in bulk"""
+        suppliers = []
+        for _ in range(count):
+            test_supplier = SupplierFactory()
+            resp = self.app.post(
+                BASE_URL, json=test_supplier.serialize(), content_type=CONTENT_TYPE_JSON
+            )
+            self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test supplier"
+            )
+            new_supplier = resp.get_json()
+            test_supplier.id = new_supplier["id"]
+            suppliers.append(test_supplier)
+        return suppliers
+
+    def test_list_suppliers(self):
+        """Get a list of suppliers"""
+        self._create_suppliers(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
 
 
