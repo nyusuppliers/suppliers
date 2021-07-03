@@ -48,20 +48,13 @@ def index():
 ######################################################################
 @app.route("/suppliers", methods=["GET"])
 def list_suppliers():
-    # """Returns all of the Suppliers"""
-    # app.logger.info("Request for pet list")
-    # pets = []
-    # category = request.args.get("category")
-    # name = request.args.get("name")
-    # if category:
-    #     pets = Pet.find_by_category(category)
-    # elif name:
-    #     pets = Pet.find_by_name(name)
-    # else:
-    #     pets = Pet.all()
+    """Returns all of the Suppliers"""
+    app.logger.info("Request for suppliers list")
+    suppliers = []
+    suppliers = Supplier.all()
 
-    # results = [pet.serialize() for pet in pets]
-    # app.logger.info("Returning %d pets", len(results))
+    results = [supplier.serialize() for supplier in suppliers]
+    app.logger.info("Returning %d suppliers", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 
 
