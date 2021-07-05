@@ -144,3 +144,18 @@ class TestYourResourceServer(TestCase):
         """DB should be unchanged"""
         new_count = self.get_supplier_count()
         self.assertEqual(new_count, len(test_suppliers))
+
+
+
+
+######################################################################
+# Def Helper Functions
+######################################################################
+    def get_supplier_count(self):
+        """return the number of suppliers"""
+        resp = self.app.get('/suppliers')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        data = resp.get_json()
+        logging.debug('data = %s', data)
+        return len(data)
+
