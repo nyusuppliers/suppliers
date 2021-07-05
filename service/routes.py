@@ -128,10 +128,10 @@ def delete_suppliers(supplier_id):
 
     # This endpoint will delete a Pet based the id specified in the path
     # """
-    # app.logger.info("Request to delete pet with id: %s", pet_id)
-    # pet = Pet.find(pet_id)
-    # if pet:
-    #     pet.delete()
+    app.logger.info("Request to delete supplier with id: %s", supplier_id)
+    supplier = Supplier.find(supplier_id)
+    if supplier:
+        supplier.delete()
 
     # app.logger.info("Pet with ID [%s] delete complete.", pet_id)
     return make_response("", status.HTTP_204_NO_CONTENT)

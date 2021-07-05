@@ -112,5 +112,50 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
+    
+    def test_delete_supplier(self):
+        """Create Suppliers """
+        test_suppliers = self._create_suppliers(5)
+        self.assertEqual(len(test_suppliers), 5)
 
+        """Delete a Supplier """
+        resp = self.app.delete('/suppliers/{}'.format(test_suppliers[0].id),
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+
+        """"Check length of db""" 
+        new_count = self.get_supplier_count()
+        self.assertEqual(new_count, len(test_suppliers)-1)
+
+        """Check if deleted Should return 404"""
+        resp = self.app.get('/suppliers/{}'.format(test_supplier.id),content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_delete_deleted_supplier(self):
+
+        """Create Suppliers """
+        test_suppliers = self._create_suppliers(5)
+        self.assertEqual(len(test_suppliers), 5)
+        """Delete an already deleted Supplier"""
+        resp = self.app.delete('/suppliers/{}'.format(0), content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        """DB should be unchanged"""
+        new_count = self.get_supplier_count()
+        self.assertEqual(new_count, len(test_suppliers))
+
+
+
+
+######################################################################
+# Def Helper Functions
+######################################################################
+    def get_supplier_count(self):
+        """return the number of suppliers"""
+        resp = self.app.get('/suppliers')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        data = resp.get_json()
+        logging.debug('data = %s', data)
+        return len(data)
 
