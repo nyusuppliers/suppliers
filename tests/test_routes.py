@@ -129,7 +129,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_count, len(test_suppliers)-1)
 
         """Check if deleted Should return 404"""
-        resp = self.app.get('/suppliers/{}'.format(test_supplier.id),content_type='application/json')
+        resp = self.app.get('/suppliers/{}'.format(test_suppliers[0].id),content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
     
     def test_delete_deleted_supplier(self):
@@ -153,13 +153,13 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["id"], test_supplier.id)
-        self.assertEqual(data["name"], test_supplier.name)
-        self.assertEqual(data["phone"], test_supplier.phone)
-        self.assertEqual(data["address"], test_supplier.address)
-        self.assertEqual(data["available"], test_supplier.available)
-        self.assertEqual(data["product_list"], test_supplier.product_list)
-        self.assertEqual(data["rating"], test_supplier.rating)
+        self.assertEqual(data["id"], test_supplier[0].id)
+        self.assertEqual(data["name"], test_supplier[0].name)
+        self.assertEqual(data["phone"], test_supplier[0].phone)
+        self.assertEqual(data["address"], test_supplier[0].address)
+        self.assertEqual(data["available"], test_supplier[0].available)
+        self.assertEqual(data["product_list"], test_supplier[0].product_list)
+        self.assertEqual(data["rating"], test_supplier[0].rating)
 
     def test_get_supplier_not_found(self):
         """Get a supplier not in the db"""
@@ -172,7 +172,7 @@ class TestYourResourceServer(TestCase):
     def get_supplier_count(self):
         """return the number of suppliers"""
         resp = self.app.get('/suppliers')
-        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         logging.debug('data = %s', data)
         return len(data)
