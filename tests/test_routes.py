@@ -166,6 +166,30 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get('/suppliers/0')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_update_supplier(self):
+        """ Update a Supplier """
+        test_suppliers = self._create_suppliers(5)
+        self.assertEqual(len(test_suppliers), 5)
+        test_suppliers[0].name= "test_update"
+        resp = self.app.put('/suppliers/{}'.format(test_suppliers[0].id),
+                            json=test_suppliers[0].serialize(), content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.get('/suppliers/{}'.format(test_suppliers[0].id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['name'], 'test_update')
+    
+    # def test_update_supplier_with_no_name(self):
+    #     """ Update a Supplier without assigning a name """
+    #     test_supplier = self._create_suppliers(1)
+    #     test_supplier[0].name = None
+    #     resp = self.app.put('/suppliers/{}'.format(test_supplier[0].id),
+    #                         json=test_supplier[0].serialize(), content_type='application/json')
+    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    
+
+
 ######################################################################
 # Def Helper Functions
 ######################################################################
@@ -175,5 +199,5 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         logging.debug('data = %s', data)
-        return len(data)
+        return len(data) 
 
