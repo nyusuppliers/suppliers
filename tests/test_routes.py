@@ -75,10 +75,10 @@ class TestYourResourceServer(TestCase):
         )
         # Check the response code is 201
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        # # Make sure location header is set. Location is the url to get the data
-        # # Location is currently not set as get_supplier service has not defined yet
-        # location = resp.headers.get("Location", None)
-        # self.assertIsNotNone(location)
+        # Make sure location header is set. Location is the url to get the data
+        # Location is currently not set as get_supplier service has not defined yet
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
         
         # Check data correctness 
         new_supplier = resp.get_json()
