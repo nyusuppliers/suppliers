@@ -147,24 +147,45 @@ class TestYourResourceServer(TestCase):
 
     def test_get_supplier(self):
         """Create Suppliers"""
-        test_supplier = self._create_suppliers(2)
+        test_suppliers = self._create_suppliers(2)
         resp = self.app.get(
-            "/suppliers/{}".format(test_supplier[0].id), content_type="application/json"
+            "/suppliers/{}".format(test_suppliers[0].id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["id"], test_supplier[0].id)
-        self.assertEqual(data["name"], test_supplier[0].name)
-        self.assertEqual(data["phone"], test_supplier[0].phone)
-        self.assertEqual(data["address"], test_supplier[0].address)
-        self.assertEqual(data["available"], test_supplier[0].available)
-        self.assertEqual(data["product_list"], test_supplier[0].product_list)
-        self.assertEqual(data["rating"], test_supplier[0].rating)
+        self.assertEqual(data["id"], test_suppliers[0].id)
+        self.assertEqual(data["name"], test_suppliers[0].name)
+        self.assertEqual(data["phone"], test_suppliers[0].phone)
+        self.assertEqual(data["address"], test_suppliers[0].address)
+        self.assertEqual(data["available"], test_suppliers[0].available)
+        self.assertEqual(data["product_list"], test_suppliers[0].product_list)
+        self.assertEqual(data["rating"], test_suppliers[0].rating)
 
     def test_get_supplier_not_found(self):
         """Get a supplier not in the db"""
         resp = self.app.get('/suppliers/0')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_supplier(self):
+        """Update a Supplier"""
+        test_supplier = self._create_suppliers(5)[0]
+        test_supplier.name = "test_update"
+        resp = self.app.put('/suppliers/{}'.format(test_supplier.id),
+                            json=test_supplier.serialize(), content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.get('/suppliers/{}'.format(test_supplier.id),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['name'], 'test_update')
+
+    def test_update_supplier_not_found(self):
+        """Update a Supplier that does not exist"""
+        new_supplier = SupplierFactory()
+        resp = self.app.put('/suppliers/0', json=new_supplier.serialize(),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
 
 ######################################################################
 # Def Helper Functions
