@@ -7,14 +7,14 @@ This project is the back end for an eCommerce web site as a RESTful microservice
 service
 ├─ __init__.py     - package initializer
 ├─ models.py      
-├─ routes.py
+├─ routes.py      - routes file
 └─ status.py
 
 tests
-├─ __init__.py
+├─ __init__.py    - Test initializer
 ├─ factories.py
 ├─ test_models.py
-└─ test_routes.py
+└─ test_routes.py  - Test routes
 ```
 
 
