@@ -89,6 +89,32 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(supplier.available, True)
         self.assertEqual(supplier.product_list, [1,2,4,5])
         self.assertEqual(supplier.rating, 3.5)
+    
+    
+    def test_deserialize_with_no_name(self):
+        """Deserialize a Supplier that has no name"""
+        data = {
+            "id": 1, 
+            "phone": '620-179-7652',
+            "address": '5312 Danielle Spurs Apt. 017\nNorth James, SD 47183',
+            "available": True,
+            "product_list": [1,2,4,5],
+            "rating": 3.5
+        }        
+        supplier = Supplier()
+        self.assertRaises(DataValidationError, supplier.deserialize, data)
+    
+
+    def test_deserialize_with_wrong_type_data(self):
+        """Deserialize a Supplier that wrong type data"""
+        data = "wrong type data"
+        supplier = Supplier()
+        self.assertRaises(DataValidationError, supplier.deserialize, "string data")
+
+    def test_update(self):
+        supplier = Supplier()
+        self.assertRaises(DataValidationError, supplier.update)
+
 
     def test_find(self):
         """ Test find a supplier by supplier_id"""
