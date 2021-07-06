@@ -145,8 +145,27 @@ class TestYourResourceServer(TestCase):
         new_count = self.get_supplier_count()
         self.assertEqual(new_count, len(test_suppliers))
 
+    def test_get_supplier(self):
+        """Create Suppliers"""
+        self._create_suppliers(2)
+        resp = self.app.get('/suppliers')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["id"], test_supplier.id)
+        self.assertEqual(data["name"], test_supplier.name)
+        self.assertEqual(data["phone"], test_supplier.phone)
+        self.assertEqual(data["address"], test_supplier.address)
+        self.assertEqual(data["available"], test_supplier.available)
+        self.assertEqual(data["product_list"], test_supplier.product_list)
+        self.assertEqual(data["rating"], test_supplier.rating)
 
-
+    def test_get_supplier_not_found(self):
+        """Get a supplier not in the db"""
+        resp = self.app.get('/suppliers/0')
+        self.assertEqual(resp.status_code, HTTP_404_NOT_FOUND)
+        data = resp.get_json()
+        logging.debug('data = %s', data)
+        self.assertIn('not found', data['message'])
 
 ######################################################################
 # Def Helper Functions
