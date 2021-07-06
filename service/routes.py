@@ -22,7 +22,7 @@ from werkzeug.exceptions import NotFound
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import Supplier, DataValidationError
+from service.models import Supplier, DataValidationError, FavoriteSupplier
 
 # Import Flask application
 from . import app
@@ -141,21 +141,30 @@ def delete_suppliers(supplier_id):
 ######################################################################
 @app.route("/suppliers/favorites", methods=["GET"])
 def list_favorite_suppliers():
-    # """Returns all of the Suppliers"""
-    # app.logger.info("Request for pet list")
-    # pets = []
-    # category = request.args.get("category")
-    # name = request.args.get("name")
-    # if category:
-    #     pets = Pet.find_by_category(category)
-    # elif name:
-    #     pets = Pet.find_by_name(name)
-    # else:
-    #     pets = Pet.all()
-
-    # results = [pet.serialize() for pet in pets]
-    # app.logger.info("Returning %d pets", len(results))
+    """Returns all of the Suppliers"""
+    results = FavoriteSupplier.all()
+    results = [r.Supplier.serialize() for r in results]
     return make_response(jsonify(results), status.HTTP_200_OK)
+
+######################################################################
+# ADD SUPLIER IN FAVORITE LIST
+######################################################################
+@app.route("/suppliers/favorites", methods=["POST"])
+def create_favorite_suppliers():
+    """ALL SUPPLIER IN FAVORITE LIST"""
+    app.logger.info("Create a new supplier favorite")
+    check_content_type("application/json")
+    supplier = FavoriteSupplier()
+    supplier.deserialize(request.get_json())
+    supplier.create()
+    message = supplier.serialize()
+    #location_url = url_for("get_supplier", supplier_id=supplier.id, _external=True)
+
+    app.logger.info("Supplier with ID [%s] created.", supplier.id)
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED
+    )
+
 
 ######################################################################
 # QUERY SUPPLIERS
@@ -186,6 +195,7 @@ def init_db():
     """ Initialies the SQLAlchemy app """
     global app
     Supplier.init_db(app)
+    FavoriteSupplier.init_db(app)
 
 def check_content_type(media_type):
     """Checks that the media type is correct"""

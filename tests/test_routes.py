@@ -186,6 +186,24 @@ class TestYourResourceServer(TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_add_supplier_in_favorite_list(self):
+        """ Test Add supplier in favorite """
+        test_supplier = self._create_suppliers(1)
+        resp = self.app.post("/suppliers/favorites", json={"supplier_id":test_supplier[0].id})
+        self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test supplier"
+            )
+    def test_get_favorite_suppliers(self):
+        """ Test to get all favorite list of suppliers """
+        test_suppliers = self._create_suppliers(5)
+        for t in test_suppliers:
+            resp = self.app.post("/suppliers/favorites", json={"supplier_id":t.id})
+        resp = self.app.get("/suppliers/favorites")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+        
+
 
 ######################################################################
 # Def Helper Functions
