@@ -195,7 +195,7 @@ class TestSupplierModel(unittest.TestCase):
         FavoriteSupplier(supplier_id=s.id).create()
         favorites = FavoriteSupplier.all()
         self.assertEqual(len(favorites), 1)
-        self.assertEqual(favorites[0].supplier_id, s.id)
+        self.assertEqual(favorites[0].FavoriteSupplier.supplier_id, s.id)
 
     def test_get_all_favorite_supplier(self):
         """ Test to get all favorite suppliers """
