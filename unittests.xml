@@ -1,1 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="10" errors="0" failures="0" skip="0"><testcase classname="tests.test_models.TestSupplierModel" name="test_deserialize_supplier" time="0.030"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find" time="0.117"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_availability" time="0.037"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_greater_rating" time="0.039"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_name" time="0.053"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_product" time="0.039"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_serialize_supplier" time="0.024"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_create_supplier" time="0.045"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_index" time="0.030"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_list_suppliers" time="0.073"></testcase></testsuite>
+<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="14" errors="3" failures="0" skip="0"><testcase classname="tests.test_models.TestSupplierModel" name="test_deserialize_supplier" time="0.014"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find" time="0.053"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_availability" time="0.019"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_greater_rating" time="0.018"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_name" time="0.029"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_find_by_product" time="0.018"></testcase><testcase classname="tests.test_models.TestSupplierModel" name="test_serialize_supplier" time="0.011"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_create_supplier" time="0.025"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_delete_deleted_supplier" time="0.035"><error type="builtins.NameError" message="name 'HTTP_200_OK' is not defined&#10;-------------------- &gt;&gt; begin captured logging &lt;&lt; --------------------&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=10&#10;flask.app: INFO: Creating Miller, Curry and Moore&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=11&#10;flask.app: INFO: Creating Moore and Sons&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=12&#10;flask.app: INFO: Creating Allen, Oneill and Good&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=13&#10;flask.app: INFO: Creating Torres-Edwards&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=14&#10;flask.app: INFO: Creating Schneider, Miller and Stewart&#10;flask.app: INFO: Processing lookup for id 0 ...&#10;flask.app: INFO: Processing all supplier&#10;--------------------- &gt;&gt; end captured logging &lt;&lt; ---------------------"><![CDATA[  File "/usr/lib/python3.8/unittest/case.py", line 60, in testPartExecutor
+    yield
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+  File "/vagrant/tests/test_routes.py", line 145, in test_delete_deleted_supplier
+    new_count = self.get_supplier_count()
+  File "/vagrant/tests/test_routes.py", line 175, in get_supplier_count
+    self.assertEqual(resp.status_code, HTTP_200_OK)
+name 'HTTP_200_OK' is not defined
+-------------------- >> begin captured logging << --------------------
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=10
+flask.app: INFO: Creating Miller, Curry and Moore
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=11
+flask.app: INFO: Creating Moore and Sons
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=12
+flask.app: INFO: Creating Allen, Oneill and Good
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=13
+flask.app: INFO: Creating Torres-Edwards
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=14
+flask.app: INFO: Creating Schneider, Miller and Stewart
+flask.app: INFO: Processing lookup for id 0 ...
+flask.app: INFO: Processing all supplier
+--------------------- >> end captured logging << ---------------------]]></error></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_delete_supplier" time="0.038"><error type="builtins.NameError" message="name 'HTTP_200_OK' is not defined&#10;-------------------- &gt;&gt; begin captured logging &lt;&lt; --------------------&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=15&#10;flask.app: INFO: Creating Singleton, Cameron and Manning&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=16&#10;flask.app: INFO: Creating Pope-Diaz&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=17&#10;flask.app: INFO: Creating Hernandez, Dawson and Hernandez&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=18&#10;flask.app: INFO: Creating Jensen Group&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=19&#10;flask.app: INFO: Creating Jarvis, Spencer and Garcia&#10;flask.app: INFO: Processing lookup for id 1 ...&#10;flask.app: INFO: Deleting Singleton, Cameron and Manning&#10;flask.app: INFO: Processing all supplier&#10;--------------------- &gt;&gt; end captured logging &lt;&lt; ---------------------"><![CDATA[  File "/usr/lib/python3.8/unittest/case.py", line 60, in testPartExecutor
+    yield
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+  File "/vagrant/tests/test_routes.py", line 128, in test_delete_supplier
+    new_count = self.get_supplier_count()
+  File "/vagrant/tests/test_routes.py", line 175, in get_supplier_count
+    self.assertEqual(resp.status_code, HTTP_200_OK)
+name 'HTTP_200_OK' is not defined
+-------------------- >> begin captured logging << --------------------
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=15
+flask.app: INFO: Creating Singleton, Cameron and Manning
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=16
+flask.app: INFO: Creating Pope-Diaz
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=17
+flask.app: INFO: Creating Hernandez, Dawson and Hernandez
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=18
+flask.app: INFO: Creating Jensen Group
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=19
+flask.app: INFO: Creating Jarvis, Spencer and Garcia
+flask.app: INFO: Processing lookup for id 1 ...
+flask.app: INFO: Deleting Singleton, Cameron and Manning
+flask.app: INFO: Processing all supplier
+--------------------- >> end captured logging << ---------------------]]></error></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_get_supplier" time="0.021"><error type="builtins.AttributeError" message="'list' object has no attribute 'id'&#10;-------------------- &gt;&gt; begin captured logging &lt;&lt; --------------------&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=20&#10;flask.app: INFO: Creating Anderson-Taylor&#10;factory.generate: DEBUG: Sequence: Computing next value of &lt;function SupplierFactory.&lt;lambda&gt; at 0x7f0b457cf550&gt; for seq=21&#10;flask.app: INFO: Creating Nelson, Patrick and Buckley&#10;flask.app: INFO: Processing lookup for id 1 ...&#10;--------------------- &gt;&gt; end captured logging &lt;&lt; ---------------------"><![CDATA[  File "/usr/lib/python3.8/unittest/case.py", line 60, in testPartExecutor
+    yield
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+  File "/vagrant/tests/test_routes.py", line 156, in test_get_supplier
+    self.assertEqual(data["id"], test_supplier.id)
+'list' object has no attribute 'id'
+-------------------- >> begin captured logging << --------------------
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=20
+flask.app: INFO: Creating Anderson-Taylor
+factory.generate: DEBUG: Sequence: Computing next value of <function SupplierFactory.<lambda> at 0x7f0b457cf550> for seq=21
+flask.app: INFO: Creating Nelson, Patrick and Buckley
+flask.app: INFO: Processing lookup for id 1 ...
+--------------------- >> end captured logging << ---------------------]]></error></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_get_supplier_not_found" time="0.012"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_index" time="0.011"></testcase><testcase classname="tests.test_routes.TestYourResourceServer" name="test_list_suppliers" time="0.034"></testcase></testsuite>
