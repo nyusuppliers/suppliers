@@ -9,6 +9,8 @@ class SupplierFactory(factory.Factory):
     """Creates fake suppliers"""
 
     class Meta:
+        """Meta class
+        """
         model = Supplier
 
     id = factory.Sequence(lambda n: n)

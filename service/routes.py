@@ -2,14 +2,14 @@
 Supplier Service
 
 Routes:
-- GET /suppliers - return the list of all suppliers 
-- POST /suppliers - create a new supplier in the database 
-- GET /suppliers/{id} - Returns the supplier with a given id number
-- PUT /suppliers/{id} - updates a supplier record in the database
-- DELETE /suppliers/{id} - deletes a supplier record in the database
-- GET /suppliers/favorites - return the list of all suppliers marked as favorites previously
-- GET /suppliers/?search={text}&supplier-id={id}&category=${category}&supplier-name=${name} - return the list of all suppliers according to the search query
-
+- GET /suppliers - Return the list of all suppliers
+- POST /suppliers - Create a new supplier in the database
+- GET /suppliers/{id} - Return the supplier with a given id number
+- PUT /suppliers/{id} - Update a supplier record in the database
+- DELETE /suppliers/{id} - Delete a supplier record in the database
+- GET /suppliers/favorites - Return the list of all suppliers marked as favorites previously
+- GET /suppliers/?search={text}&supplier-id={id}&category=${category}&supplier-name=${name}
+    - Return the list of all suppliers according to the search query
 """
 
 import os
@@ -78,7 +78,8 @@ def list_suppliers():
         rating = float(rating)
         suppliers = Supplier.find_by_greater_rating(rating)
     elif product_id:
-        app.logger.info('Find suppliers containing product with id %s in their products', product_id)
+        app.logger.info('Find suppliers containing product with id %s in their products', \
+            product_id)
         product_id = int(product_id)
         suppliers = Supplier.find_by_product(product_id)
     else:
@@ -114,6 +115,9 @@ def get_suppliers(supplier_id):
 ######################################################################
 @app.route("/suppliers", methods=["POST"])
 def create_suppliers():
+    """
+    ADD A NEW SUPPLIER
+    """
     app.logger.info("Create a new supplier")
     check_content_type("application/json")
     supplier = Supplier()
@@ -155,11 +159,11 @@ def update_suppliers(supplier_id):
 ######################################################################
 @app.route("/suppliers/<int:supplier_id>", methods=["DELETE"])
 def delete_suppliers(supplier_id):
-    # """
-    # Delete a Supplier
+    """
+    Delete a Supplier
 
-    # This endpoint will delete a Supplier based the id specified in the path
-    # """
+    This endpoint will delete a Supplier based the id specified in the path
+    """
     app.logger.info("Request to delete supplier with id: %s", supplier_id)
     supplier = Supplier.find(supplier_id)
     if supplier:
@@ -169,34 +173,12 @@ def delete_suppliers(supplier_id):
     return make_response("", status.HTTP_204_NO_CONTENT)
 
 ######################################################################
-# LIST ALL FAVORITE SUPPLIERS
-######################################################################
-@app.route("/suppliers/favorites", methods=["GET"])
-def list_favorite_suppliers():
-    # """Returns all of the Suppliers"""
-    # app.logger.info("Request for pet list")
-    # pets = []
-    # category = request.args.get("category")
-    # name = request.args.get("name")
-    # if category:
-    #     pets = Pet.find_by_category(category)
-    # elif name:
-    #     pets = Pet.find_by_name(name)
-    # else:
-    #     pets = Pet.all()
-
-    # results = [pet.serialize() for pet in pets]
-    # app.logger.info("Returning %d pets", len(results))
-    return make_response(jsonify(results), status.HTTP_200_OK)
-
-
-######################################################################
 # PATH: /suppliers/{supplier_id}/penalize
 ######################################################################
 @app.route("/suppliers/<supplier_id>/penalize", methods=["PUT"])
 def penalize(supplier_id):
     """
-    penalize a supplier
+    Penalize a supplier
     """
     app.logger.info("Request to penalize supplier with id: %s", supplier_id)
     check_content_type("application/json")
@@ -229,5 +211,4 @@ def check_content_type(media_type):
     app.logger.error("Invalid Content-Type: %s", content_type)
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),
-    )
+        "Content-Type must be {}".format(media_type),)
