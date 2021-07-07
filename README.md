@@ -26,7 +26,7 @@ tests
 | phone | String | False | Phone number of the supplier 
 | address | String | False| Address of the supplier
 | available | Boolean(default True) |False | supplier availbility
-| product_list | Integer Array | False | Product id lists for each supplier
+| product_list | Integer List | False | Product id lists for each supplier
 | rating | Float | False | Supplier rating 
 
 ## Run the test service on Your Local PC
