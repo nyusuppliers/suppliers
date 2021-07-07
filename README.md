@@ -28,7 +28,7 @@ tests
 
 | Field | Type | Primary Key | Descriptions 
 | :--- | :--- | :--- | :--- |
-| id | Integer | True | Id of the supplier 
+| id | Integer | True | ID of the supplier 
 | name | String | False | Name of the individual or company name 
 | phone | String | False | Phone number of the supplier 
 | address | String | False| Address of the supplier
