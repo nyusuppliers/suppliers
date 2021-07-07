@@ -75,10 +75,10 @@ class TestYourResourceServer(TestCase):
         )
         # Check the response code is 201
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-        # Make sure location header is set. Location is the url to get the data
-        # Location is currently not set as get_supplier service has not defined yet
-        location = resp.headers.get("Location", None)
-        self.assertIsNotNone(location)
+        # # Make sure location header is set. Location is the url to get the data
+        # # Location is currently not set as get_supplier service has not defined yet
+        # location = resp.headers.get("Location", None)
+        # self.assertIsNotNone(location)
         
         # Check data correctness 
         new_supplier = resp.get_json()
@@ -112,78 +112,6 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
-
-    def test_query_suppliers_by_name(self):
-        """ Test query suppliers by name"""
-        test_suppliers = self._create_suppliers(5)
-        test_name = test_suppliers[0].name
-        name_suppliers = [supplier for supplier in test_suppliers if supplier.name == test_name]
-        resp = self.app.get("/suppliers", query_string="name={}".format(test_name))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(name_suppliers))
-        for supplier in data:
-            self.assertEqual(supplier["name"], test_name)
-    
-    def test_query_by_phone(self):
-        """Query Suppliers by phone"""
-        suppliers = self._create_suppliers(5)
-        test_phone = suppliers[0].phone
-        phone_suppliers = [supplier for supplier in suppliers if supplier.phone == test_phone]
-        resp = self.app.get("/suppliers", query_string="phone={}".format(test_phone))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        for supplier in data:
-            self.assertEqual(supplier['phone'], test_phone)   
-
-    def test_query_by_address(self):
-        """Query Suppliers by address"""
-        suppliers = self._create_suppliers(5)
-        test_address = suppliers[0].address
-        address_suppliers = [supplier for supplier in suppliers if supplier.address == test_address]
-        resp = self.app.get("/suppliers", query_string="address={}".format(test_address))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(address_suppliers))
-        for supplier in data:
-            self.assertEqual(supplier['address'], test_address)   
-
-    def test_query_by_available(self):
-        """Query Suppliers by available"""
-        suppliers = self._create_suppliers(5)
-        test_available = suppliers[0].available
-        available_suppliers = [supplier for supplier in suppliers if supplier.available == test_available]
-        resp = self.app.get("/suppliers", query_string="available={}".format(test_available))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(available_suppliers))
-        for supplier in data:
-            self.assertEqual(supplier['available'], test_available)   
-    
-    def test_query_by_rating(self):
-        """Query Suppliers by rating"""
-        suppliers = self._create_suppliers(5)
-        rating_limit = suppliers[0].rating
-        rating_suppliers = [supplier for supplier in suppliers if supplier.rating >= rating_limit]
-        resp = self.app.get("/suppliers", query_string="rating={}".format(rating_limit))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(rating_suppliers))
-        for supplier in data:
-            self.assertGreaterEqual(supplier['rating'], rating_limit)
-
-
-    def test_query_by_product_id(self):
-        """ Query Suppliers by product id """
-        suppliers = self._create_suppliers(5)
-        test_product_id = suppliers[0].product_list[0]
-        all_suppliers = [supplier for supplier in suppliers if test_product_id in supplier.product_list]
-        resp = self.app.get("/suppliers", query_string="product_id={}".format(test_product_id))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(all_suppliers))
-        for supplier in data:
-            self.assertIn(test_product_id, supplier['product_list'])
     
     def test_delete_supplier(self):
         """Create Suppliers """
@@ -258,21 +186,24 @@ class TestYourResourceServer(TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_penalize_supplier(self):
-        """penalize a supplier by ID"""
-        test_supplier = self._create_suppliers(5)[0]
-        old=test_supplier.rating
+    def test_add_supplier_in_favorite_list(self):
+        """ Test Add supplier in favorite """
+        test_supplier = self._create_suppliers(1)
+        resp = self.app.post("/suppliers/favorites", json={"supplier_id":test_supplier[0].id})
+        self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test supplier"
+            )
+    def test_get_favorite_suppliers(self):
+        """ Test to get all favorite list of suppliers """
+        test_suppliers = self._create_suppliers(5)
+        for t in test_suppliers:
+            resp = self.app.post("/suppliers/favorites", json={"supplier_id":t.id})
+        resp = self.app.get("/suppliers/favorites")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+        
 
-        resp = self.app.put(
-            "/suppliers/{}/penalize".format(test_supplier.id),
-            content_type="application/json",
-        )
-        #self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        penalized_supplier = resp.get_json()
-        if old >= 1:
-            self.assertEqual(penalized_supplier["rating"], old-1)
-        else:
-            self.assertEqual(penalized_supplier["rating"], 0)
 
 ######################################################################
 # Def Helper Functions
@@ -284,4 +215,3 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         logging.debug('data = %s', data)
         return len(data)
-
