@@ -13,7 +13,7 @@ supplier_id (int): Id of the supplier
 name (string): Name of the individual or company name 
 phone (string): Phone number of the supplier 
 zip code (int): Zip code address of the supplier 
-availble (boolean): Ture for active supplier 
+availble (boolean): True for active supplier 
 product_list (list of ints): list of product id this supplier offers 
 rating (float): average rating given by the customer
 """
@@ -151,7 +151,23 @@ class Supplier(db.Model):
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+    
+    @classmethod
+    def find_by_phone(cls, phone):
+        """Returns all suppliers with the given phone number
 
+        """
+        logger.info("Processing phone query for %s ...", phone)
+        return cls.query.filter(cls.phone == phone)
+
+    @classmethod
+    def find_by_address(cls, address):
+        """Returns all suppliers with the given address
+
+        """
+        logger.info("Processing address query for %s ...", address)
+        return cls.query.filter(cls.address == address)
+    
     @classmethod
     def find_by_availability(cls, available = True):
         logger.info("Processing available query for %s ...", available)
@@ -166,74 +182,6 @@ class Supplier(db.Model):
     @classmethod
     def find_by_greater_rating(cls, rating):
         """Return all suppliers with rating grater than given rating """
-        logger.info("Processing rating query for %d ...", rating)
+        logger.info("Processing greater rating query for %d ...", rating)
         return cls.query.filter(cls.rating >= rating)
-
-class FavoriteSupplier(db.Model):
-    """
-    Class that represents list of favorite suppliers
-    """
-
-    app = None
-
-    ##################################################
-    # Table Schema
-    ##################################################
-    _tablename_ = "favorite_suppliers"
-
-    id = db.Column(db.Integer, primary_key=True)
-    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'), nullable=False)
-
-
-    def __repr__(self):
-        return "<FavoriteSupplier %r id=[%s]>" % (self.supplier_id, self.id)
-
-    def create(self):
-        """
-        Creates a Supplier to the database
-        """
-        logger.info("Creating %s", self.supplier_id)
-        self.id = None  # id must be none to generate next primary key
-        db.session.add(self)
-        db.session.commit()
-
-    def serialize(self):
-        """ Serializes a supplier into a dictionary """
-        return {"supplier" : self.supplier_id}
-
-    def deserialize(self, data):
-        """
-        Deserializes a supplier from a dictionary
-
-        Args:
-            data (dict): A dictionary containing the resource data
-        """
-        try:
-            self.supplier_id = data["supplier_id"]
-        except KeyError as error:
-            raise DataValidationError(
-                "Invalid supplier: missing " + error.args[0]
-            )
-        except TypeError as error:
-            raise DataValidationError(
-                "Invalid supplier: body of request contained bad or no data"
-            )
-        return self
-
-    @classmethod
-    def init_db(cls, app):
-        """ Initializes the database session """
-        logger.info("Initializing database")
-        cls.app = app
-        print("inside init_db", app.config["SQLALCHEMY_DATABASE_URI"])
-        # This is where we initialize SQLAlchemy from the Flask app
-        db.init_app(app)
-        app.app_context().push()
-        db.create_all()  # make our sqlalchemy tables
-
-    @classmethod
-    def all(cls):
-        """ Returns all of the suppliers in the database """
-        logger.info("Processing all supplier")
-        return db.session.query(Supplier, FavoriteSupplier).filter(Supplier.id==FavoriteSupplier.supplier_id).all()
-
+    
