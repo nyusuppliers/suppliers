@@ -133,7 +133,6 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get("/suppliers", query_string="phone={}".format(test_phone))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(len(data), len(phone_suppliers))
         for supplier in data:
             self.assertEqual(supplier['phone'], test_phone)   
 
@@ -259,6 +258,21 @@ class TestYourResourceServer(TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_penalize_supplier(self):
+        """penalize a supplier by ID"""
+        test_supplier = self._create_suppliers(5)[0]
+        old=test_supplier.rating
+
+        resp = self.app.put(
+            "/suppliers/{}/penalize".format(test_supplier.id),
+            content_type="application/json",
+        )
+        #self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        penalized_supplier = resp.get_json()
+        if old >= 1:
+            self.assertEqual(penalized_supplier["rating"], old-1)
+        else:
+            self.assertEqual(penalized_supplier["rating"], 0)
 
 ######################################################################
 # Def Helper Functions

@@ -189,6 +189,29 @@ def list_favorite_suppliers():
     # app.logger.info("Returning %d pets", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 
+
+######################################################################
+# PATH: /suppliers/{supplier_id}/penalize
+######################################################################
+@app.route("/suppliers/<supplier_id>/penalize", methods=["PUT"])
+def penalize(supplier_id):
+    """
+    penalize a supplier
+    """
+    app.logger.info("Request to penalize supplier with id: %s", supplier_id)
+    check_content_type("application/json")
+    supplier = Supplier.find(supplier_id)
+    if not supplier:
+        raise NotFound("supplier with id '{}' was not found.".format(supplier_id))
+    if supplier.rating >= 1:
+        supplier.rating -= 1
+    else:
+        supplier.rating = 0
+    supplier.update()
+
+    app.logger.info("Customer with ID [%s] penalized.", supplier.id)
+    return make_response(jsonify(supplier.serialize()), status.HTTP_200_OK)
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
