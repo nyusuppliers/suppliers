@@ -184,4 +184,73 @@ class Supplier(db.Model):
         """Return all suppliers with rating grater than given rating """
         logger.info("Processing greater rating query for %d ...", rating)
         return cls.query.filter(cls.rating >= rating)
-    
+
+
+class FavoriteSupplier(db.Model):
+    """
+    Class that represents list of favorite suppliers
+    """
+
+    app = None
+
+    ##################################################
+    # Table Schema
+    ##################################################
+    _tablename_ = "favorite_suppliers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'), nullable=False)
+
+
+    def __repr__(self):
+        return "<FavoriteSupplier %r id=[%s]>" % (self.supplier_id, self.id)
+
+    def create(self):
+        """
+        Creates a Supplier to the database
+        """
+        logger.info("Creating %s", self.supplier_id)
+        self.id = None  # id must be none to generate next primary key
+        db.session.add(self)
+        db.session.commit()
+
+    def serialize(self):
+        """ Serializes a supplier into a dictionary """
+        return {"supplier" : self.supplier_id}
+
+    def deserialize(self, data):
+        """
+        Deserializes a supplier from a dictionary
+
+        Args:
+            data (dict): A dictionary containing the resource data
+        """
+        try:
+            self.supplier_id = data["supplier_id"]
+        except KeyError as error:
+            raise DataValidationError(
+                "Invalid supplier: missing " + error.args[0]
+            )
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid supplier: body of request contained bad or no data"
+            )
+        return self
+
+    @classmethod
+    def init_db(cls, app):
+        """ Initializes the database session """
+        logger.info("Initializing database")
+        cls.app = app
+        print("inside init_db", app.config["SQLALCHEMY_DATABASE_URI"])
+        # This is where we initialize SQLAlchemy from the Flask app
+        db.init_app(app)
+        app.app_context().push()
+        db.create_all()  # make our sqlalchemy tables
+
+    @classmethod
+    def all(cls):
+        """ Returns all of the suppliers in the database """
+        logger.info("Processing all supplier")
+        return db.session.query(Supplier, FavoriteSupplier).filter(Supplier.id==FavoriteSupplier.supplier_id).all()
+
