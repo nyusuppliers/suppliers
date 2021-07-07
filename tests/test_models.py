@@ -7,7 +7,7 @@ import unittest
 import os
 from werkzeug.exceptions import NotFound
 from service import app
-from service.models import Supplier, DataValidationError, db, FavoriteSupplier
+from service.models import Supplier, DataValidationError, db
 from .factories import SupplierFactory
 
 DATABASE_URI = os.getenv(
@@ -187,39 +187,3 @@ class TestSupplierModel(unittest.TestCase):
         suppliers = Supplier.find_by_greater_rating(3.5)
         supplier_list = [supplier for supplier in suppliers]
         self.assertEqual(len(supplier_list), 2)
-    
-    def test_element_in_add_favorite(self):
-        """ Test to add element in favorite list """
-        s = Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5)
-        s.create()
-        FavoriteSupplier(supplier_id=s.id).create()
-        favorites = FavoriteSupplier.all()
-        self.assertEqual(len(favorites), 1)
-        self.assertEqual(favorites[0].FavoriteSupplier.supplier_id, s.id)
-
-    def test_get_all_favorite_supplier(self):
-        """ Test to get all favorite suppliers """
-        s1=Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5)
-        s1.create()
-        s2=Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8)
-        s2.create()
-        s3=Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7)
-        s3.create()
-        FavoriteSupplier(supplier_id=s1.id).create()
-        FavoriteSupplier(supplier_id=s2.id).create()
-        FavoriteSupplier(supplier_id=s3.id).create()
-        favorites = FavoriteSupplier.all()
-        self.assertEqual(len(favorites), 3)
-
-    def test_favorite_deserialize_with_no_id(self):
-        """Deserialize a FavoriteSupplier that has no name"""
-        data = {}        
-        supplier = FavoriteSupplier()
-        self.assertRaises(DataValidationError, supplier.deserialize, data)
-    
-
-    def test_deserialize_with_wrong_type_data(self):
-        """Deserialize a FavoriteSupplier that wrong type data"""
-        data = "wrong type data"
-        supplier = FavoriteSupplier()
-        self.assertRaises(DataValidationError, supplier.deserialize, "string data")
