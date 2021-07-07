@@ -13,7 +13,7 @@ supplier_id (int): Id of the supplier
 name (string): Name of the individual or company name 
 phone (string): Phone number of the supplier 
 zip code (int): Zip code address of the supplier 
-availble (boolean): Ture for active supplier 
+availble (boolean): True for active supplier 
 product_list (list of ints): list of product id this supplier offers 
 rating (float): average rating given by the customer
 """
@@ -151,7 +151,23 @@ class Supplier(db.Model):
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+    
+    @classmethod
+    def find_by_phone(cls, phone):
+        """Returns all suppliers with the given phone number
 
+        """
+        logger.info("Processing phone query for %s ...", phone)
+        return cls.query.filter(cls.phone == phone)
+
+    @classmethod
+    def find_by_address(cls, address):
+        """Returns all suppliers with the given address
+
+        """
+        logger.info("Processing address query for %s ...", address)
+        return cls.query.filter(cls.address == address)
+    
     @classmethod
     def find_by_availability(cls, available = True):
         logger.info("Processing available query for %s ...", available)
@@ -166,5 +182,6 @@ class Supplier(db.Model):
     @classmethod
     def find_by_greater_rating(cls, rating):
         """Return all suppliers with rating grater than given rating """
-        logger.info("Processing rating query for %d ...", rating)
+        logger.info("Processing greater rating query for %d ...", rating)
         return cls.query.filter(cls.rating >= rating)
+    
