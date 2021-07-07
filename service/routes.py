@@ -49,9 +49,41 @@ def index():
 @app.route("/suppliers", methods=["GET"])
 def list_suppliers():
     """Returns all of the Suppliers"""
-    app.logger.info("Request for suppliers list")
-    suppliers = []
-    suppliers = Supplier.all()
+    app.logger.info('Request to list Suppliers...')
+
+    name = request.args.get('name')
+    phone = request.args.get('phone')
+    address = request.args.get('address')
+    available = request.args.get('available')
+    rating = request.args.get('rating')
+    product_id = request.args.get('product_id')
+
+    # "available": True,
+    # "product_list": [1,2,4,5],
+    # "rating": 3.5
+    if name:
+        app.logger.info('Find suppliers by name: %s', name)
+        suppliers = Supplier.find_by_name(name)
+    elif phone:
+        app.logger.info('Find suppliers with phone number: %s', phone)
+        suppliers = Supplier.find_by_phone(phone)
+    elif address:
+        app.logger.info('Find suppliers with address: %s', address)
+        suppliers = Supplier.find_by_address(address)
+    elif available:
+        app.logger.info('Find all suppliers that are available: %s', available)
+        suppliers = Supplier.find_by_availability(available)
+    elif rating:
+        app.logger.info('Find suppliers with rating greater than: %s', rating)
+        rating = float(rating)
+        suppliers = Supplier.find_by_greater_rating(rating)
+    elif product_id:
+        app.logger.info('Find suppliers containing product with id %s in their products', product_id)
+        product_id = int(product_id)
+        suppliers = Supplier.find_by_product(product_id)
+    else:
+        app.logger.info('Find all suppliers')
+        suppliers = Supplier.all()
 
     results = [supplier.serialize() for supplier in suppliers]
     app.logger.info("Returning %d suppliers", len(results))
@@ -141,27 +173,6 @@ def delete_suppliers(supplier_id):
 ######################################################################
 @app.route("/suppliers/favorites", methods=["GET"])
 def list_favorite_suppliers():
-    # """Returns all of the Suppliers"""
-    # app.logger.info("Request for pet list")
-    # pets = []
-    # category = request.args.get("category")
-    # name = request.args.get("name")
-    # if category:
-    #     pets = Pet.find_by_category(category)
-    # elif name:
-    #     pets = Pet.find_by_name(name)
-    # else:
-    #     pets = Pet.all()
-
-    # results = [pet.serialize() for pet in pets]
-    # app.logger.info("Returning %d pets", len(results))
-    return make_response(jsonify(results), status.HTTP_200_OK)
-
-######################################################################
-# QUERY SUPPLIERS
-######################################################################
-@app.route("/suppliers/?search={text}&supplier-id={id}&category=${category}&supplier-name=${name}", methods=["GET"])
-def query_suppliers():
     # """Returns all of the Suppliers"""
     # app.logger.info("Request for pet list")
     # pets = []

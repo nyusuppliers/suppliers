@@ -10,7 +10,7 @@ import logging
 from flask import Flask
 
 # Create Flask application
-app = Flask(__name__)
+app = Flask(__name__)  # pylint: disable=invalid-name
 app.config.from_object("config")
 
 # Import the rutes After the Flask app is created
