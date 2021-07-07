@@ -1,10 +1,10 @@
 """
-TestYourResourceModel API Service Test Suite
+Test cases for Supplier Service
 
 Test cases can be run with the following:
-  nosetests -v --with-spec --spec-color
-  coverage report -m
+  nosetests
 """
+
 import os
 import logging
 from typing import SupportsRound
@@ -79,15 +79,21 @@ class TestYourResourceServer(TestCase):
         # Location is currently not set as get_supplier service has not defined yet
         location = resp.headers.get("Location", None)
         self.assertIsNotNone(location)
-        
-        # Check data correctness 
+
+        # Check data correctness
         new_supplier = resp.get_json()
-        self.assertEqual(new_supplier["name"], supplier.name, "Name do not match")
-        self.assertEqual(new_supplier["phone"], supplier.phone, "Phone number do not match")
-        self.assertEqual(new_supplier["address"], supplier.address, "Address do not match")
-        self.assertEqual(new_supplier["available"], supplier.available, "Availability Flag do not match")
-        self.assertEqual(new_supplier["product_list"], supplier.product_list, "Product List do not match")
-        self.assertEqual(new_supplier["rating"], supplier.rating, "Rating do not match")
+        self.assertEqual(new_supplier["name"], \
+            supplier.name, "Name do not match")
+        self.assertEqual(new_supplier["phone"], \
+            supplier.phone, "Phone number do not match")
+        self.assertEqual(new_supplier["address"], \
+            supplier.address, "Address do not match")
+        self.assertEqual(new_supplier["available"], \
+            supplier.available, "Availability Flag do not match")
+        self.assertEqual(new_supplier["product_list"], \
+            supplier.product_list, "Product List do not match")
+        self.assertEqual(new_supplier["rating"], \
+            supplier.rating, "Rating do not match")
 
     def _create_suppliers(self, count):
         """Factory method to create pets in bulk"""
@@ -124,7 +130,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(len(data), len(name_suppliers))
         for supplier in data:
             self.assertEqual(supplier["name"], test_name)
-    
+
     def test_query_by_phone(self):
         """Query Suppliers by phone"""
         suppliers = self._create_suppliers(5)
@@ -134,7 +140,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         for supplier in data:
-            self.assertEqual(supplier['phone'], test_phone)   
+            self.assertEqual(supplier['phone'], test_phone)
 
     def test_query_by_address(self):
         """Query Suppliers by address"""
@@ -146,20 +152,21 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), len(address_suppliers))
         for supplier in data:
-            self.assertEqual(supplier['address'], test_address)   
+            self.assertEqual(supplier['address'], test_address)
 
     def test_query_by_available(self):
         """Query Suppliers by available"""
         suppliers = self._create_suppliers(5)
         test_available = suppliers[0].available
-        available_suppliers = [supplier for supplier in suppliers if supplier.available == test_available]
+        available_suppliers = [supplier for supplier in suppliers if \
+            supplier.available == test_available]
         resp = self.app.get("/suppliers", query_string="available={}".format(test_available))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(available_suppliers))
         for supplier in data:
-            self.assertEqual(supplier['available'], test_available)   
-    
+            self.assertEqual(supplier['available'], test_available)
+
     def test_query_by_rating(self):
         """Query Suppliers by rating"""
         suppliers = self._create_suppliers(5)
@@ -177,14 +184,15 @@ class TestYourResourceServer(TestCase):
         """ Query Suppliers by product id """
         suppliers = self._create_suppliers(5)
         test_product_id = suppliers[0].product_list[0]
-        all_suppliers = [supplier for supplier in suppliers if test_product_id in supplier.product_list]
+        all_suppliers = [supplier for supplier in suppliers if \
+            test_product_id in supplier.product_list]
         resp = self.app.get("/suppliers", query_string="product_id={}".format(test_product_id))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(all_suppliers))
         for supplier in data:
             self.assertIn(test_product_id, supplier['product_list'])
-    
+
     def test_delete_supplier(self):
         """Create Suppliers """
         test_suppliers = self._create_suppliers(5)
@@ -196,14 +204,15 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
 
-        """"Check length of db""" 
+        """"Check length of db"""
         new_count = self.get_supplier_count()
         self.assertEqual(new_count, len(test_suppliers)-1)
 
         """Check if deleted Should return 404"""
-        resp = self.app.get('/suppliers/{}'.format(test_suppliers[0].id),content_type='application/json')
+        resp = self.app.get('/suppliers/{}'.format(test_suppliers[0].id),\
+            content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_delete_deleted_supplier(self):
 
         """Create Suppliers """
@@ -284,4 +293,3 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         logging.debug('data = %s', data)
         return len(data)
-

@@ -5,17 +5,17 @@ All of the models are stored in this module
 
 Models
 -----
-Supplier - Supplier information used in E-commerce website 
+Supplier - Supplier information used in eCommerce website
 
 Attributes:
 -----
-supplier_id (int): Id of the supplier 
-name (string): Name of the individual or company name 
-phone (string): Phone number of the supplier 
-zip code (int): Zip code address of the supplier 
-availble (boolean): True for active supplier 
-product_list (list of ints): list of product id this supplier offers 
-rating (float): average rating given by the customer
+id (int): ID of the supplier
+name (string): Name of the supplier
+phone (string): Phone number of the supplier
+address (string): Address of the supplier
+availble (boolean): True for active supplier, False for inactive
+product_list (list of ints): List of product_id the supplier offers
+rating (float): Rating given to the supplier overall performance
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
@@ -81,7 +81,7 @@ class Supplier(db.Model):
     def serialize(self):
         """ Serializes a supplier into a dictionary """
         return {
-            "id": self.id, 
+            "id": self.id,
             "name": self.name,
             "phone": self.phone,
             "address": self.address,
@@ -151,7 +151,7 @@ class Supplier(db.Model):
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
-    
+
     @classmethod
     def find_by_phone(cls, phone):
         """Returns all suppliers with the given phone number
@@ -167,9 +167,10 @@ class Supplier(db.Model):
         """
         logger.info("Processing address query for %s ...", address)
         return cls.query.filter(cls.address == address)
-    
+
     @classmethod
     def find_by_availability(cls, available = True):
+        """ Return all suppliers with given available status """
         logger.info("Processing available query for %s ...", available)
         return cls.query.filter(cls.available == available)
 

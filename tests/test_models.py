@@ -1,7 +1,10 @@
 """
-Test cases for supplier Model
+Test cases for Supplier Model
 
+Test cases can be run with the following:
+  nosetests
 """
+
 import logging
 import unittest
 import os
@@ -71,7 +74,7 @@ class TestSupplierModel(unittest.TestCase):
     def test_deserialize_supplier(self):
         """ Test deserialize() function in Supplier model """
         data = {
-            "id": 1, 
+            "id": 1,
             "name": 'Graves, Thompson and Pena',
             "phone": '620-179-7652',
             "address": '5312 Danielle Spurs Apt. 017\nNorth James, SD 47183',
@@ -89,21 +92,21 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(supplier.available, True)
         self.assertEqual(supplier.product_list, [1,2,4,5])
         self.assertEqual(supplier.rating, 3.5)
-    
-    
+
+
     def test_deserialize_with_no_name(self):
         """Deserialize a Supplier that has no name"""
         data = {
-            "id": 1, 
+            "id": 1,
             "phone": '620-179-7652',
             "address": '5312 Danielle Spurs Apt. 017\nNorth James, SD 47183',
             "available": True,
             "product_list": [1,2,4,5],
             "rating": 3.5
-        }        
+        }
         supplier = Supplier()
         self.assertRaises(DataValidationError, supplier.deserialize, data)
-    
+
 
     def test_deserialize_with_wrong_type_data(self):
         """Deserialize a Supplier that wrong type data"""
@@ -112,6 +115,9 @@ class TestSupplierModel(unittest.TestCase):
         self.assertRaises(DataValidationError, supplier.deserialize, "string data")
 
     def test_update(self):
+        """
+        Test update
+        """
         supplier = Supplier()
         self.assertRaises(DataValidationError, supplier.update)
 
@@ -155,34 +161,53 @@ class TestSupplierModel(unittest.TestCase):
 
     def test_find_by_availability(self):
         """Test find all suppliers with given availability flag"""
-        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
-        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
-        Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
+            address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
+                available=True, product_list=[1,2,4,5], rating=3.5).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
+            address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
+                available=False, product_list=[1,2,3,5], rating=4.8).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", \
+            address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
+                available=True, product_list=[1,2,3], rating=2.7).create()
 
         suppliers = Supplier.find_by_availability(False)
         supplier_list = [supplier for supplier in suppliers]
         self.assertEqual(len(supplier_list), 1)
-        
+
     def test_find_by_product(self):
         """Test find all suppliers with given product id"""
-        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
-        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
-        Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
+            address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
+                available=True, product_list=[1,2,4,5], rating=3.5).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
+            address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
+                available=False, product_list=[1,2,3,5], rating=4.8).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", \
+            address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
+                available=True, product_list=[1,2,3], rating=2.7).create()
 
         suppliers = Supplier.find_by_product(4)
         self.assertNotEqual(suppliers[0], None)
         self.assertEqual(suppliers[0].name, "Graves, Thompson and Pena")
         self.assertEqual(suppliers[0].phone, "620-179-7652")
-        self.assertEqual(suppliers[0].address, "5312 Danielle Spurs Apt. 017\nNorth James, SD 47183")
+        self.assertEqual(suppliers[0].address, \
+            "5312 Danielle Spurs Apt. 017\nNorth James, SD 47183")
         self.assertEqual(suppliers[0].available, True)
         self.assertEqual(suppliers[0].product_list, [1,2,4,5])
         self.assertEqual(suppliers[0].rating, 3.5)
 
     def test_find_by_greater_rating(self):
         """Test find all suppliers with rating higher than the given rating"""
-        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
-        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
-        Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
+            address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
+                available=True, product_list=[1,2,4,5], rating=3.5).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
+            address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
+                available=False, product_list=[1,2,3,5], rating=4.8).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", \
+            address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
+                available=True, product_list=[1,2,3], rating=2.7).create()
 
         suppliers = Supplier.find_by_greater_rating(3.5)
         supplier_list = [supplier for supplier in suppliers]
