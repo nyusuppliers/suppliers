@@ -2,6 +2,13 @@
 
 This project is the back end for an eCommerce web site as a RESTful microservice for the suppliers. An supplier is a vendor from whom we get products from. This microservice supports the complete Create, Read, Update, & Delete (CRUD) lifecycle
 
+## Team Member 
+- Sayed Rahmann (ssr8998@nyu.edu) | GMT -5
+- Zunduo Zhao (zz3000@nyu.edu) | GMT +8
+- Joyce Lu (yl6211@nyu.edu) | GMT -5
+- Sindhuja Rao (snr6450@nyu.edu) | GMT -5
+- Wenhan Zhang (wz1238@nyu.edu) | GMT +8
+
 ## Repository Structure
 ```
 service
@@ -70,3 +77,52 @@ Once finish testing and no longer need it again. Please type following command t
 ```
 $ vagrant destroy
 ```
+## API Reference 
+
+### LIST 
+- End Point: **GET** /suppliers?param={query_param}
+- Query Parameters:
+    - name (string)
+    - phone (string)
+    - address (string)
+    - available (boolean)
+    - rating (string)
+    - product_id (string)
+
+### READ 
+- End Point: **GET** /suppliers/{supplier_id}
+- Path Parameters:
+    - supplier_id (int)
+
+### CREATE 
+- End Point: **POST** /suppliers 
+- Body Parameters:
+    - name (string)
+    - phone (string)
+    - address (string)
+    - available (boolean)
+    - rating (float)
+    - product_id (list of int)
+
+### UPDATE
+- End Point: **PUT** /suppliers/{supplier_id}
+- Path Parameters:
+    - supplier_id (int)
+- Body Parameters:
+    - name (string)
+    - phone (string)
+    - address (string)
+    - available (boolean)
+    - rating (float)
+    - product_id (list of int)    
+
+### DELETE
+- End Point: **DELETE** /suppliers/{supplier_id}
+- Path Parameters:
+    - supplier_id (int)
+
+### PENALIZE
+- End Point: **PUT** /suppliers/{supplier_id}/penalize
+- Path Parameters:
+    - supplier_id (int)
+    
