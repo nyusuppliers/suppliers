@@ -1,8 +1,8 @@
 ---
-name: Story
+name: story
 about: Create a User Story to enhance the product
 title: ''
-labels: enhancement
+labels: ''
 assignees: ''
 
 ---
@@ -11,10 +11,12 @@ assignees: ''
 **I need** ...  
 **So that** ...  
 
-**Assumptions:** 
+**Assumptions:**
+
 * ...
 
 **Acceptance Criteria:**
+
 ```
 Given ...
 When ...

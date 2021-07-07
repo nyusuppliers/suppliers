@@ -1,2 +1,3 @@
 [MESSAGES CONTROL]
-disable=E1101
+disable=E1101,R0801,R0904,W0312,wrong-import-position
+min-public-methods=0

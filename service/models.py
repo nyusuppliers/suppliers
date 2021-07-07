@@ -1,36 +1,34 @@
 """
-Models for YourResourceModel
-
-All of the models are stored in this module
+Models for Suppliers module
 
 Models
------
-Supplier - Supplier information used in E-commerce website 
-
+------
+Supplier - Suppliers' information used in eCommerce website
 Attributes:
------
-supplier_id (int): Id of the supplier 
-name (string): Name of the individual or company name 
-phone (string): Phone number of the supplier 
-zip code (int): Zip code address of the supplier 
-availble (boolean): True for active supplier 
-product_list (list of ints): list of product id this supplier offers 
-rating (float): average rating given by the customer
+-----------
+id (int): ID of the supplier
+name (string): The name of the supplier
+phone (string): The phone number of the supplier
+address (string): The address of the supplier
+availble (boolean): True for active supplier, False for inactive
+product_list (list of int): List of product IDs that the supplier offers
+rating (float): Rating given for the supplier overall performance
 """
+
+
 import logging
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ARRAY
 
 logger = logging.getLogger("flask.app")
-
-# Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
 
-    pass
-
+##################################################
+# class Supplier
+##################################################
 class Supplier(db.Model):
     """
     Class that represents a supplier
@@ -73,13 +71,17 @@ class Supplier(db.Model):
         db.session.commit()
 
     def delete(self):
-        """ Removes a supplier from the data store """
+        """
+        Removes a supplier from the data store
+        """
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a supplier into a dictionary """
+        """
+        Serializes a supplier into a dictionary
+        """
         return {
             "id": self.id, 
             "name": self.name,
@@ -92,9 +94,6 @@ class Supplier(db.Model):
     def deserialize(self, data):
         """
         Deserializes a supplier from a dictionary
-
-        Args:
-            data (dict): A dictionary containing the resource data
         """
         try:
             self.name = data["name"]
@@ -104,18 +103,16 @@ class Supplier(db.Model):
             self.product_list = data["product_list"]
             self.rating = data["rating"]
         except KeyError as error:
-            raise DataValidationError(
-                "Invalid supplier: missing " + error.args[0]
-            )
+            raise DataValidationError("Invalid Supplier: Data Missing\n{}".format(error))
         except TypeError as error:
-            raise DataValidationError(
-                "Invalid supplier: body of request contained bad or no data"
-            )
+            raise DataValidationError("Invalid Supplier: Type Error\n{}".format(error))
         return self
 
     @classmethod
     def init_db(cls, app):
-        """ Initializes the database session """
+        """
+        Initializes the database session
+        """
         logger.info("Initializing database")
         cls.app = app
         print("inside init_db", app.config["SQLALCHEMY_DATABASE_URI"])
@@ -126,7 +123,9 @@ class Supplier(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the suppliers in the database """
+        """
+        Returns all of the suppliers in the database
+        """
         logger.info("Processing all supplier")
         return cls.query.all()
 
@@ -144,25 +143,24 @@ class Supplier(db.Model):
 
     @classmethod
     def find_by_name(cls, name):
-        """Returns all suppliers with the given name
-
-        Args:
-            name (string): the name of the supplier you want to match
+        """
+        Returns all suppliers with the given name
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
     
     @classmethod
     def find_by_phone(cls, phone):
-        """Returns all suppliers with the given phone number
-
         """
-        logger.info("Processing phone query for %s ...", phone)
+        Returns all suppliers with the given phone number
+        """
+        logger.info("Processing phone number query for %s ...", phone)
         return cls.query.filter(cls.phone == phone)
 
     @classmethod
     def find_by_address(cls, address):
-        """Returns all suppliers with the given address
+        """
+        Returns all suppliers with the given address
 
         """
         logger.info("Processing address query for %s ...", address)
@@ -175,13 +173,17 @@ class Supplier(db.Model):
 
     @classmethod
     def find_by_product(cls, product_id):
-        """ Return all suppliers with given produce id """
+        """
+        Return all suppliers with given produce id
+        """
         logger.info("Processing product_id query for %d ...", product_id)
         return cls.query.filter(cls.product_list.contains([product_id])).all()
 
     @classmethod
     def find_by_greater_rating(cls, rating):
-        """Return all suppliers with rating grater than given rating """
-        logger.info("Processing greater rating query for %d ...", rating)
+        """
+        Return all suppliers with rating grater or equal to given rating
+        """
+        logger.info("Processing greater or equal rating query for %d ...", rating)
         return cls.query.filter(cls.rating >= rating)
     

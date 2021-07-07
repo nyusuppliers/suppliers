@@ -1,9 +1,8 @@
 """
-TestYourResourceModel API Service Test Suite
+Test cases for Supplier Service
 
 Test cases can be run with the following:
-  nosetests -v --with-spec --spec-color
-  coverage report -m
+nosetests
 """
 import os
 import logging
@@ -64,7 +63,7 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["name"], "E-commerce Supplier REST API Service")
+        self.assertEqual(data["name"], "eCommerce Supplier REST API Service")
 
     def test_create_supplier(self):
         """Test create new supplier service call"""

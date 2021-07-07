@@ -1,12 +1,15 @@
 """
 Test Factory to make fake objects for testing
 """
+
 import factory
 from factory.fuzzy import FuzzyChoice, FuzzyFloat
 from service.models import Supplier
 
 class SupplierFactory(factory.Factory):
-    """Creates fake suppliers"""
+    """
+    Creates fake suppliers
+    """
 
     class Meta:
         model = Supplier

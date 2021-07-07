@@ -1,7 +1,11 @@
 """
-Test cases for supplier Model
+Test cases for Supplier Model
+
+Test cases can be run with the following:
+nosetests
 
 """
+
 import logging
 import unittest
 import os
@@ -18,11 +22,15 @@ DATABASE_URI = os.getenv(
 #  S U P P L I E R   M O D E L   T E S T   C A S E S
 ######################################################################
 class TestSupplierModel(unittest.TestCase):
-    """ Test Cases for Supplier Model """
+    """
+    Test Cases for Supplier Model
+    """
 
     @classmethod
     def setUpClass(cls):
-        """ This runs once before the entire test suite """
+        """
+        This runs once before the entire test suite
+        """
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
@@ -31,16 +39,22 @@ class TestSupplierModel(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """ This runs once after the entire test suite """
+        """
+        This runs once after the entire test suite
+        """
         db.session.close()
 
     def setUp(self):
-        """ This runs before each test """
+        """
+        This runs before each test
+        """
         db.drop_all()
         db.create_all()
 
     def tearDown(self):
-        """ This runs after each test """
+        """
+        This runs after each test
+        """
         db.session.remove()
         db.drop_all()
 
@@ -49,7 +63,9 @@ class TestSupplierModel(unittest.TestCase):
     ######################################################################
 
     def test_serialize_supplier(self):
-        """ Test serialize() function in Supplier model """
+        """
+        Test serialize() function in Supplier model
+        """
         supplier = SupplierFactory()
         data = supplier.serialize()
         self.assertNotEqual(data, None)
@@ -69,7 +85,9 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(data["rating"], supplier.rating)
 
     def test_deserialize_supplier(self):
-        """ Test deserialize() function in Supplier model """
+        """
+        Test deserialize() function in Supplier model
+        """
         data = {
             "id": 1, 
             "name": 'Graves, Thompson and Pena',
@@ -92,7 +110,9 @@ class TestSupplierModel(unittest.TestCase):
     
     
     def test_deserialize_with_no_name(self):
-        """Deserialize a Supplier that has no name"""
+        """
+        Deserialize a Supplier that has no name
+        """
         data = {
             "id": 1, 
             "phone": '620-179-7652',
@@ -106,7 +126,9 @@ class TestSupplierModel(unittest.TestCase):
     
 
     def test_deserialize_with_wrong_type_data(self):
-        """Deserialize a Supplier that wrong type data"""
+        """
+        Deserialize a Supplier that wrong type data
+        """
         data = "wrong type data"
         supplier = Supplier()
         self.assertRaises(DataValidationError, supplier.deserialize, "string data")
@@ -117,7 +139,9 @@ class TestSupplierModel(unittest.TestCase):
 
 
     def test_find(self):
-        """ Test find a supplier by supplier_id"""
+        """
+        Test find a supplier by supplier_id
+        """
         suppliers = SupplierFactory.create_batch(5)
         for supplier in suppliers:
             supplier.create()
@@ -136,7 +160,9 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(supplier.rating, suppliers[3].rating)
 
     def test_find_by_name(self):
-        """ Test find a supplier by supplier name """
+        """
+        Test find a supplier by supplier name
+        """
         suppliers = SupplierFactory.create_batch(3)
         for supplier in suppliers:
             supplier.create()
@@ -154,7 +180,9 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(supplier[0].rating, suppliers[1].rating)
 
     def test_find_by_availability(self):
-        """Test find all suppliers with given availability flag"""
+        """
+        Test find all suppliers with given availability flag
+        """
         Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
         Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
         Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
@@ -164,7 +192,9 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(len(supplier_list), 1)
         
     def test_find_by_product(self):
-        """Test find all suppliers with given product id"""
+        """
+        Test find all suppliers with given product id
+        """
         Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
         Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
         Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
@@ -179,7 +209,9 @@ class TestSupplierModel(unittest.TestCase):
         self.assertEqual(suppliers[0].rating, 3.5)
 
     def test_find_by_greater_rating(self):
-        """Test find all suppliers with rating higher than the given rating"""
+        """
+        Test find all suppliers with rating higher than the given rating
+        """
         Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", available=True, product_list=[1,2,4,5], rating=3.5).create()
         Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", available=False, product_list=[1,2,3,5], rating=4.8).create()
         Supplier(name="Perez LLC", phone="6574-477-5210", address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", available=True, product_list=[1,2,3], rating=2.7).create()
