@@ -11,10 +11,10 @@ service
 └─ status.py       - service status codes
 
 tests
-├─ __init__.py     -vtest initializer
-├─ factories.py    -vmodule to generate the fake data
-├─ test_models.py  -vtest case for the models service
-└─ test_routes.py  -vtest case for the routes service
+├─ __init__.py     - test initializer
+├─ factories.py    - module to generate the fake data
+├─ test_models.py  - test case for the models service
+└─ test_routes.py  - test case for the routes service
 ```
 
 ## Database Deisgn Attributes
