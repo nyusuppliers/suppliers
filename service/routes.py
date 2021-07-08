@@ -173,6 +173,19 @@ def delete_suppliers(supplier_id):
     return make_response("", status.HTTP_204_NO_CONTENT)
 
 ######################################################################
+# PATH: /suppliers/favorites
+######################################################################
+@app.route("/suppliers/favorites", methods=["GET"])
+def get_favorite_suppliers():
+    """
+    Get favorite suppliers
+    """
+    app.logger.info("Request to get favorite supplier")
+    result = Supplier.find_all_favorite_supplier()
+    suppliers = [ r.serialize() for r in result ]
+    return make_response(jsonify(suppliers), status.HTTP_200_OK)
+
+######################################################################
 # PATH: /suppliers/{supplier_id}/penalize
 ######################################################################
 @app.route("/suppliers/<supplier_id>/penalize", methods=["PUT"])
@@ -182,9 +195,7 @@ def penalize(supplier_id):
     """
     app.logger.info("Request to penalize supplier with id: %s", supplier_id)
     check_content_type("application/json")
-    supplier = Supplier.find(supplier_id)
-    if not supplier:
-        raise NotFound("supplier with id '{}' was not found.".format(supplier_id))
+    supplier = Supplier.find_or_404(supplier_id)
     if supplier.rating >= 1:
         supplier.rating -= 1
     else:

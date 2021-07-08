@@ -16,6 +16,7 @@ address (string): Address of the supplier
 availble (boolean): True for active supplier, False for inactive
 product_list (list of ints): List of product_id the supplier offers
 rating (float): Rating given to the supplier overall performance
+favorite (boolean): True for supplier is favorite, false if not
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
@@ -50,6 +51,7 @@ class Supplier(db.Model):
     available = db.Column(db.Boolean(), nullable=False, default=True)
     product_list = db.Column(ARRAY(db.Integer), nullable=True)
     rating = db.Column(db.Float)
+    favorite = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return "<Supplier %r id=[%s]>" % (self.name, self.id)
@@ -87,6 +89,7 @@ class Supplier(db.Model):
             "address": self.address,
             "available": self.available,
             "product_list": self.product_list,
+            "favorite": self.favorite,
             "rating": self.rating}
 
     def deserialize(self, data):
@@ -102,6 +105,7 @@ class Supplier(db.Model):
             self.address = data["address"]
             self.available = data["available"]
             self.product_list = data["product_list"]
+            self.favorite=data["favorite"]
             self.rating = data["rating"]
         except KeyError as error:
             raise DataValidationError(
@@ -111,6 +115,7 @@ class Supplier(db.Model):
             raise DataValidationError(
                 "Invalid supplier: body of request contained bad or no data"
             )
+
         return self
 
     @classmethod
@@ -122,6 +127,7 @@ class Supplier(db.Model):
         # This is where we initialize SQLAlchemy from the Flask app
         db.init_app(app)
         app.app_context().push()
+        db.drop_all()
         db.create_all()  # make our sqlalchemy tables
 
     @classmethod
@@ -185,4 +191,8 @@ class Supplier(db.Model):
         """Return all suppliers with rating grater than given rating """
         logger.info("Processing greater rating query for %d ...", rating)
         return cls.query.filter(cls.rating >= rating)
-    
+    @classmethod
+    def find_all_favorite_supplier(cls):
+        """ Return all suppliers with favorite=True """
+        logger.info("Processing find all favorite suppliers")
+        return cls.query.filter(cls.favorite==True).all()

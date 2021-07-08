@@ -70,6 +70,7 @@ class TestYourResourceServer(TestCase):
         """Test create new supplier service call"""
         supplier = SupplierFactory()
         logging.debug(supplier)
+        logging.debug(supplier.serialize())
         resp = self.app.post(
             BASE_URL, json=supplier.serialize(), content_type=CONTENT_TYPE_JSON
         )
@@ -282,6 +283,16 @@ class TestYourResourceServer(TestCase):
             self.assertEqual(penalized_supplier["rating"], old-1)
         else:
             self.assertEqual(penalized_supplier["rating"], 0)
+
+    def test_get_favorite_suppliers(self):
+        test_suppliers = self._create_suppliers(5)
+        all_suppliers = [r for r in test_suppliers if r.favorite==True]
+        resp = self.app.get("/suppliers/favorites")
+        suppliers = resp.get_json()
+        self.assertEqual(len(suppliers), len(all_suppliers))
+
+    def test_invalid_media_type(self):
+        self.app.post("/suppliers", content_type="formdata")
 
 ######################################################################
 # Def Helper Functions

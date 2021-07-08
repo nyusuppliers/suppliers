@@ -80,7 +80,8 @@ class TestSupplierModel(unittest.TestCase):
             "address": '5312 Danielle Spurs Apt. 017\nNorth James, SD 47183',
             "available": True,
             "product_list": [1,2,4,5],
-            "rating": 3.5
+            "rating": 3.5,
+            "favorite": True
         }
         supplier = Supplier()
         supplier.deserialize(data)
@@ -102,7 +103,8 @@ class TestSupplierModel(unittest.TestCase):
             "address": '5312 Danielle Spurs Apt. 017\nNorth James, SD 47183',
             "available": True,
             "product_list": [1,2,4,5],
-            "rating": 3.5
+            "rating": 3.5,
+            "favorite": True
         }
         supplier = Supplier()
         self.assertRaises(DataValidationError, supplier.deserialize, data)
@@ -163,13 +165,13 @@ class TestSupplierModel(unittest.TestCase):
         """Test find all suppliers with given availability flag"""
         Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
             address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
-                available=True, product_list=[1,2,4,5], rating=3.5).create()
+                available=True, product_list=[1,2,4,5], rating=3.5, favorite=True).create()
         Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
             address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
-                available=False, product_list=[1,2,3,5], rating=4.8).create()
+                available=False, product_list=[1,2,3,5], rating=4.8, favorite=True).create()
         Supplier(name="Perez LLC", phone="6574-477-5210", \
             address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
-                available=True, product_list=[1,2,3], rating=2.7).create()
+                available=True, product_list=[1,2,3], rating=2.7, favorite=True).create()
 
         suppliers = Supplier.find_by_availability(False)
         supplier_list = [supplier for supplier in suppliers]
@@ -179,13 +181,13 @@ class TestSupplierModel(unittest.TestCase):
         """Test find all suppliers with given product id"""
         Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
             address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
-                available=True, product_list=[1,2,4,5], rating=3.5).create()
+                available=True, product_list=[1,2,4,5], rating=3.5, favorite=True).create()
         Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
             address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
-                available=False, product_list=[1,2,3,5], rating=4.8).create()
+                available=False, product_list=[1,2,3,5], rating=4.8, favorite=True).create()
         Supplier(name="Perez LLC", phone="6574-477-5210", \
             address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
-                available=True, product_list=[1,2,3], rating=2.7).create()
+                available=True, product_list=[1,2,3], rating=2.7, favorite=True).create()
 
         suppliers = Supplier.find_by_product(4)
         self.assertNotEqual(suppliers[0], None)
@@ -201,14 +203,31 @@ class TestSupplierModel(unittest.TestCase):
         """Test find all suppliers with rating higher than the given rating"""
         Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
             address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
-                available=True, product_list=[1,2,4,5], rating=3.5).create()
+                available=True, product_list=[1,2,4,5], rating=3.5, favorite=True).create()
         Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
             address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
-                available=False, product_list=[1,2,3,5], rating=4.8).create()
+                available=False, product_list=[1,2,3,5], rating=4.8, favorite=True).create()
         Supplier(name="Perez LLC", phone="6574-477-5210", \
             address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
-                available=True, product_list=[1,2,3], rating=2.7).create()
+                available=True, product_list=[1,2,3], rating=2.7, favorite=True).create()
 
         suppliers = Supplier.find_by_greater_rating(3.5)
+        supplier_list = [supplier for supplier in suppliers]
+        self.assertEqual(len(supplier_list), 2)
+
+    def test_find_all_favorite_suppliers(self):
+        """ Test find all favorite suppliers """
+
+        Supplier(name="Graves, Thompson and Pena", phone="620-179-7652", \
+            address="5312 Danielle Spurs Apt. 017\nNorth James, SD 47183", \
+                available=True, product_list=[1,2,4,5], rating=3.5, favorite=True).create()
+        Supplier(name="Rogers, Cabrera and Lee", phone="011-526-6218", \
+            address="59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107", \
+                available=False, product_list=[1,2,3,5], rating=4.8, favorite=False).create()
+        Supplier(name="Perez LLC", phone="6574-477-5210", \
+            address="41570 Ashley Manors\nNorth Kevinchester, FL 68266", \
+                available=True, product_list=[1,2,3], rating=2.7, favorite=True).create()
+
+        suppliers = Supplier.find_all_favorite_supplier()
         supplier_list = [supplier for supplier in suppliers]
         self.assertEqual(len(supplier_list), 2)
