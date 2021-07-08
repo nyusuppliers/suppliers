@@ -127,7 +127,6 @@ class Supplier(db.Model):
         # This is where we initialize SQLAlchemy from the Flask app
         db.init_app(app)
         app.app_context().push()
-        db.drop_all()
         db.create_all()  # make our sqlalchemy tables
 
     @classmethod
