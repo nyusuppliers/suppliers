@@ -17,7 +17,7 @@ import sys
 import logging
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status  # HTTP Status Codes
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
@@ -38,7 +38,7 @@ def index():
         jsonify(
             name="E-commerce Supplier REST API Service",
             version="1.0",
-            #path=url_for("list_suppliers", _external=True)
+            path=url_for("list_suppliers", _external=True)
         ),
         status.HTTP_200_OK
     )
@@ -206,9 +206,17 @@ def init_db():
 def check_content_type(media_type):
     """Checks that the media type is correct"""
     content_type = request.headers.get("Content-Type")
-    if content_type and content_type == media_type:
+    if content_type == media_type:
         return
     app.logger.error("Invalid Content-Type: %s", content_type)
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),)
+    raise BadRequest("Content-Type must be {}".format(media_type))
+
+@app.errorhandler(404)
+def item_not_found(error):
+    return (jsonify({"status_code": status.HTTP_404_NOT_FOUND, 
+                    "error": "{}".format(error)}), status.HTTP_404_NOT_FOUND)
+
+@app.errorhandler(400)
+def bad_request(error):
+    return (jsonify({"status_code": status.HTTP_400_BAD_REQUEST, 
+                    "error": "{}".format(error)}), status.HTTP_400_BAD_REQUEST)
