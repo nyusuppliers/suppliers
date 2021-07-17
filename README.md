@@ -1,6 +1,7 @@
 ## NYU DevOps Summer 2021 - Supplier
 
 [![Build Status](https://travis-ci.com/nyusuppliers/suppliers.svg?branch=main)](https://travis-ci.com/nyusuppliers/suppliers)
+[![codecov](https://codecov.io/gh/nyusuppliers/suppliers/branch/main/graph/badge.svg?token=VWAL4SIAK2)](https://codecov.io/gh/nyusuppliers/suppliers)
 
 ## Introduction
 
