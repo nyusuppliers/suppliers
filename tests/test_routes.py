@@ -279,9 +279,9 @@ class TestYourResourceServer(TestCase):
         #self.assertEqual(resp.status_code, status.HTTP_200_OK)
         penalized_supplier = resp.get_json()
         if old >= 1:
-            self.assertEqual(penalized_supplier["rating"], old-1)
+            self.assertAlmostEqual(penalized_supplier["rating"], old-1)
         else:
-            self.assertEqual(penalized_supplier["rating"], 0)
+            self.assertAlmostEqual(penalized_supplier["rating"], 0)
 
 ######################################################################
 # Def Helper Functions
