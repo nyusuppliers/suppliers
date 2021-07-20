@@ -8,11 +8,11 @@
 This project is the back end for an eCommerce web site as a RESTful microservice for the Suppliers. An Supplier is a vendor from whom we get products from. This microservice supports the complete Create, Read, Update, & Delete (CRUD) lifecycle.
 
 ## Team Member 
-- Joyce Lu      &nbsp &nbsp &nbsp &nbsp &nbsp (yl6211@nyu.edu )| GMT -5
+- Joyce Lu      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (yl6211@nyu.edu )| GMT -5
 - Sayed Rahmann (ssr8998@nyu.edu)| GMT -5
 - Sindhuja Rao  (snr6450@nyu.edu)| GMT -5
 - Wenhan Zhang  (wz1238@nyu.edu )| GMT +8
-- Zunduo Zhao   &nbsp (zz3000@nyu.edu )| GMT +8
+- Zunduo Zhao   &nbsp; (zz3000@nyu.edu )| GMT +8
 
 ## Repository Structure
 ```
