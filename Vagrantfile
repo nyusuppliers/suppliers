@@ -109,8 +109,6 @@ Vagrant.configure(2) do |config|
     # Done
   SHELL
 
-end
-
   ######################################################################
   # Setup a Bluemix and Kubernetes environment
   ######################################################################
