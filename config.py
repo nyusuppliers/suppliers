@@ -9,7 +9,7 @@ DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost
 
 # Overwrite if we are running in Cloud Foundry 
 if 'VCAP_SERVICES' in os.environ:
-    vcap = json.load(os.environ['VCAP_SERVICES'])
+    vcap = json.loads(os.environ['VCAP_SERVICES'])
     DATABASE_URI = vcap['user-provided'][0]['credentials']['DATABASE_URI']
 
 # Configure SQLAlchemy
