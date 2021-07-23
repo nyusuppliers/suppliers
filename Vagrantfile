@@ -68,6 +68,11 @@ Vagrant.configure(2) do |config|
     config.vm.provision "file", source: "~/.vimrc", destination: "~/.vimrc"
   end
 
+  # Copy your IBM Cloud API Key if you have one
+  if File.exists?(File.expand_path("~/.bluemix/apiKey.json"))
+    config.vm.provision "file", source: "~/.bluemix/apiKey.json", destination: "~/.bluemix/apiKey.json"
+  end
+
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
@@ -102,6 +107,35 @@ Vagrant.configure(2) do |config|
     echo "Creating test database"
     docker exec postgres psql -c "create database testdb;" -U postgres
     # Done
+  SHELL
+
+  ######################################################################
+  # Setup a Bluemix and Kubernetes environment
+  ######################################################################
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "\n************************************"
+    echo " Installing IBM Cloud CLI..."
+    echo "************************************\n"
+    # Install IBM Cloud CLI as Vagrant user
+    sudo -H -u vagrant sh -c '
+    wget -O bluemix-cli.tar.gz https://clis.cloud.ibm.com/download/bluemix-cli/1.4.0/linux64 && \
+    tar xzvf bluemix-cli.tar.gz && \
+    cd Bluemix_CLI/ && \
+    ./install && \
+    cd .. && \
+    rm -fr Bluemix_CLI/ bluemix-cli.tar.gz && \
+    ibmcloud cf install
+    '
+
+    # Show completion instructions
+    sudo -H -u vagrant sh -c "echo alias ic=/usr/local/bin/ibmcloud >> ~/.bash_aliases"
+    echo "\n************************************"
+    echo "If you have an IBM Cloud API key in ~/.bluemix/apiKey.json"
+    echo "You can login with the following command:"
+    echo "\n"
+    echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.bluemix/apiKey.json -r us-south"
+    echo "ibmcloud target --cf -o <your_org_here> -s dev"
+    echo "\n************************************"
   SHELL
 
 end
