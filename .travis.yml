@@ -9,11 +9,34 @@ install: "pip install -r requirements.txt"
 before_script: 
   - psql -c 'create database testdb;' -U postgres
 
-script:
-  - nosetests
+# script:
+#   - nosetests
 
 after_success:
   - codecov
 
 services:
   - postgresql
+
+# command to run tests
+jobs:
+  include:
+    - stage: Test
+      name: TDD
+      script: nosetests
+
+    - stage: Test
+      name: BDD
+      addons:
+        chrome: stable
+        apt:
+          packages:
+            - chromium-chromedriver 
+            - python3-selenium
+      before_script:
+        - chromedriver --version
+        - gunicorn --log-level=critical --bind=127.0.0.1:5000 service:app &  # start a Web server in the background
+        - sleep 5 # give Web server some time to bind to sockets, etc
+        - curl -I http://localhost:5000/  # make sure the service is up
+      script:
+        - behave
