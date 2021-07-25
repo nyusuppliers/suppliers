@@ -31,7 +31,7 @@ jobs:
         chrome: stable
         apt:
           packages:
-            - chromium-chromedriver 
+            - chromium-chromedriver 90
             - python3-selenium
       before_script:
         - chromedriver --version
