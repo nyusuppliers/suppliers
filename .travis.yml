@@ -1,3 +1,5 @@
+sudo: required
+
 language: python
 python:
   - "3.8"
@@ -18,13 +20,6 @@ after_success:
 services:
   - postgresql
 
-addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
-
 # command to run tests
 jobs:
   include:
@@ -38,7 +33,7 @@ jobs:
         chrome: stable
         apt:
           packages:
-            # - chromium-chromedriver
+            - chromium-chromedriver
             - python3-selenium
       before_script:
         - chromedriver --version
