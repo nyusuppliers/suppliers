@@ -17,9 +17,9 @@ def before_all(context):
     options.add_argument("--disable-dev-shm-usage") # overcome limited resource problems
     options.add_argument("--no-sandbox") # Bypass OS security model
     options.add_argument("--headless")
-    context.WAIT_SECONNDS = WAIT_SECONDS
+    context.WAIT_SECONDS = WAIT_SECONDS
     context.driver = webdriver.Chrome(options=options)
-    context.driver.implicitly_wait(context.WAIT_SECONNDS)
+    context.driver.implicitly_wait(context.WAIT_SECONDS)
 
     context.base_url = BASE_URL
     # -- SET LOG LEVEL: behave --logging-level=ERROR ...
