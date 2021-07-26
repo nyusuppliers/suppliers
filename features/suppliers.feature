@@ -8,7 +8,7 @@ Background:
         | name | phone | address | available | product_list | rating |
         | Graves, Thompson and Pena | 620-179-7652 | 5312 Danielle Spurs Apt. 017\nNorth James, SD 47183 | True | 1,2,4,5 | 3.5 |
         | Rogers, Cabrera and Lee | 011-526-6218 | 59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107 | False | 1,2,3,5 | 4.8 |
-        | Perez LLC | 6574-477-5210 | 41570 Ashley Manors\nNorth Kevinchester, FL 68266 | True | 1,2,3 | 2.7 |
+        | Perez LLC | 6574-477-5210 | 41570 Ashley Manors\nNorth Kevinchester, FL 68266 | True | 1,2,3 | 1.7 |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -45,3 +45,36 @@ Scenario: Delete a Supplier
     When I press the "Clear" button
     And I press the "Search" button
     Then I should not see "Perez LLC" in the results
+
+Scenario: Penalize a Supplier
+    When I visit the "Home Page"
+    And I set the "Name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the "Name" field
+    And I should see "1.7" in the "Rating" field
+    When I press the "Penalize" button
+    Then I should see the message "Supplier has been Penalized!"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "0.7" in the "Rating" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "0.7" in the results
+
+    When I press the "Clear" button
+    And I set the "Name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the "Name" field
+    And I should see "0.7" in the "Rating" field
+    When I press the "Penalize" button
+    Then I should see the message "Supplier has been Penalized!"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "0" in the "Rating" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "0" in the results
