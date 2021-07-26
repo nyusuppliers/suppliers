@@ -17,9 +17,17 @@ availble (boolean): True for active supplier, False for inactive
 product_list (list of ints): List of product_id the supplier offers
 rating (float): Rating given to the supplier overall performance
 """
+import os
 import logging
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ARRAY
+from retry import retry
+from requests import HTTPError
+
+# global variables for retry (must be int)
+RETRY_COUNT = int(os.environ.get("RETRY_COUNT", 10))
+RETRY_DELAY = int(os.environ.get("RETRY_DELAY", 1))
+RETRY_BACKOFF = int(os.environ.get("RETRY_BACKOFF", 2))
 
 logger = logging.getLogger("flask.app")
 
@@ -54,6 +62,13 @@ class Supplier(db.Model):
     def __repr__(self):
         return "<Supplier %r id=[%s]>" % (self.name, self.id)
 
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def create(self):
         """
         Creates a Supplier to the database
@@ -63,6 +78,13 @@ class Supplier(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def update(self):
         """
         Updates a Supplier to the database
@@ -72,6 +94,13 @@ class Supplier(db.Model):
             raise DataValidationError("Update called with empty supplier id")
         db.session.commit()
 
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def delete(self):
         """ Removes a supplier from the data store """
         logger.info("Deleting %s", self.name)
@@ -125,24 +154,52 @@ class Supplier(db.Model):
         db.create_all()  # make our sqlalchemy tables
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def all(cls):
         """ Returns all of the suppliers in the database """
         logger.info("Processing all supplier")
         return cls.query.all()
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find(cls, supplier_id):
         """ Finds a supplier by it's ID """
         logger.info("Processing lookup for id %s ...", supplier_id)
         return cls.query.get(supplier_id)
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_or_404(cls, supplier_id):
         """ Find a supplier by it's id """
         logger.info("Processing lookup or 404 for id %s ...", supplier_id)
         return cls.query.get_or_404(supplier_id)
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_by_name(cls, name):
         """Returns all suppliers with the given name
 
@@ -153,6 +210,13 @@ class Supplier(db.Model):
         return cls.query.filter(cls.name == name)
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_by_phone(cls, phone):
         """Returns all suppliers with the given phone number
 
@@ -161,6 +225,13 @@ class Supplier(db.Model):
         return cls.query.filter(cls.phone == phone)
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_by_address(cls, address):
         """Returns all suppliers with the given address
 
@@ -169,18 +240,39 @@ class Supplier(db.Model):
         return cls.query.filter(cls.address == address)
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_by_availability(cls, available = True):
         """ Return all suppliers with given available status """
         logger.info("Processing available query for %s ...", available)
         return cls.query.filter(cls.available == available)
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_by_product(cls, product_id):
         """ Return all suppliers with given produce id """
         logger.info("Processing product_id query for %d ...", product_id)
         return cls.query.filter(cls.product_list.contains([product_id])).all()
 
     @classmethod
+    @retry(
+        HTTPError,
+        delay=RETRY_DELAY,
+        backoff=RETRY_BACKOFF,
+        tries=RETRY_COUNT,
+        logger=logger,
+    )
     def find_by_greater_rating(cls, rating):
         """Return all suppliers with rating grater than given rating """
         logger.info("Processing greater rating query for %d ...", rating)
