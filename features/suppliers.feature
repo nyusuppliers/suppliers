@@ -78,3 +78,11 @@ Scenario: Penalize a Supplier
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see "0" in the results
+
+Scenario: List all suppliers
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "Graves, Thompson and Pena" in the results
+    And I should see "Rogers, Cabrera and Lee" in the results
+    And I should see "Perez LLC" in the results
