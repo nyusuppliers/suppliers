@@ -45,3 +45,20 @@ Scenario: Delete a Supplier
     When I press the "Clear" button
     And I press the "Search" button
     Then I should not see "Perez LLC" in the results
+
+Scenario: Penalize a Supplier
+    When I visit the "Home Page"
+    And I set the "Name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the "Name" field
+    And I should see "2.7" in the "Rating" field
+    When I press the "Penalize" button
+    Then I should see the message "Supplier has been Penalized!"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "1.7" in the "Rating" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "1.7" in the results
