@@ -14,3 +14,16 @@ Scenario: The server is running
     When I visit the "Home Page"
     Then I should see "Supplier RESTful Service" in the title
     And I should not see "404 Not Found"
+
+
+Scenario: Delete a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Perez LLC" in the results
+    When I press the "Delete" button
+    Then I should see the message "Supplier has been Deleted!"
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should not see "Perez LLC" in the results
