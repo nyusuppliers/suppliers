@@ -15,10 +15,28 @@ Scenario: The server is running
     Then I should see "Supplier RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: Update a Supplier
+    When I visit the "Home Page"
+    And I set the "Name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the "Name" field
+    And I should see "6574-477-5210" in the "Phone" field
+    When I change "Phone" to "6574-477-5212"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "6574-477-5212" in the "Phone" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "6574-477-5212" in the results
+    Then I should not see "6574-477-5210" in the results
 
 Scenario: Delete a Supplier
     When I visit the "Home Page"
-    And I set the "name" to "Perez LLC"
+    And I set the "Name" to "Perez LLC"
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "Perez LLC" in the results
