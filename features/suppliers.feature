@@ -113,3 +113,15 @@ Scenario: List all suppliers
     Then I should see "Graves, Thompson and Pena" in the results
     And I should see "Rogers, Cabrera and Lee" in the results
     And I should see "Perez LLC" in the results
+
+Scenario: Query suppliers
+    When I visit the "Home Page"
+    And I set the "Name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the "Name" field
+    Then I should see "Perez LLC" in the results
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the results
