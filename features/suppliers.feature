@@ -15,6 +15,33 @@ Scenario: The server is running
     Then I should see "Supplier RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: Create a Supplier
+    When I visit the "Home Page"
+    And I set the "Name" to "Perez LLC"
+    And I set the "Phone" to "657-477-5265"
+    And I select "False" in the "Available" dropdown
+    And I set the "Address" to "221B Baker Street London"
+    And I set the "Product_List" to "[1,2,3]"
+    And I set the "Rating" to "4"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    And the "Phone" field should be empty
+    And the "Address" field should be empty
+    And the "Product_List" field should be empty
+    And the "Rating" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "Perez LLC" in the "Name" field
+    And I should see "657-477-5265" in the "Phone" field
+    And I should see "False" in the "Available" dropdown
+    And I should see "221B Baker Street London" in the "Address" field
+    And I should see "[1,2,3]" in the "Product_List" field
+    And I should see "4" in the "Rating" field
+
 Scenario: Update a Supplier
     When I visit the "Home Page"
     And I set the "Name" to "Perez LLC"
