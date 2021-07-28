@@ -45,13 +45,7 @@ Scenario: Create a Supplier
 Scenario: Retrieve a Supplier
     When I visit the "Home Page"
     And I set the "name" to "Perez LLC"
-    And I set the "phone" to "6574-477-5210"
-    And I set the "address" to "41570 Ashley Manors\nNorth Kevinchester, FL 68266"
-    And I select "True" in the "available" dropdown
-    And I set the "product_list" to "1,2,3"
-    And I set the "rating" to "1.7"
-    And I press the "Create" button
-    Then I should see the message "Success"
+    And I press the "Retrieve" button
     When I copy the "Id" field
     And I press the "Clear" button
     Then the "Id" field should be empty
@@ -60,6 +54,8 @@ Scenario: Retrieve a Supplier
     And the "Address" field should be empty
     And the "Product_List" field should be empty
     And the "Rating" field should be empty
+    Then I paste the "Id" field
+    And I press the "Retrieve" button
     Then I should see "Perez LLC" in the "Name" field
     And I should see "657-477-5265" in the "Phone" field
     And I should see "False" in the "Available" dropdown
