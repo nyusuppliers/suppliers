@@ -113,3 +113,38 @@ Scenario: List all suppliers
     Then I should see "Graves, Thompson and Pena" in the results
     And I should see "Rogers, Cabrera and Lee" in the results
     And I should see "Perez LLC" in the results
+
+Scenario: Query suppliers
+    When I visit the "Home Page"
+    And I set the "Name" to "Perez LLC"
+    And I press the "Search" button
+    Then I should see "Perez LLC" in the "Name" field
+    Then I should see "Perez LLC" in the results
+    When I press the "Clear" button
+    And I set the "Phone" to "011-526-6218"
+    And I press the "Search" button
+    Then I should see "Rogers, Cabrera and Lee" in the results
+    Then I should not see "Perez LLC" in the results
+    When I press the "Clear" button
+    And I set the "Address" to "59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107"
+    And I press the "Search" button
+    Then I should see "59869 Padilla Stream Apt. 194\nWest Tanyafort, KY 73107" in the results
+    Then I should not see "Perez LLC" in the results
+    When I press the "Clear" button
+    And I set the "Rating" to "3.4"
+    And I press the "Search" button
+    Then I should see "Rogers, Cabrera and Lee" in the results
+    Then I should see "Graves, Thompson and Pena" in the results
+    Then I should not see "Perez LLC" in the results
+    When I press the "Clear" button
+    And I select "True" in the "Available" dropdown
+    And I press the "Search" button
+    Then I should not see "Rogers, Cabrera and Lee" in the results
+    Then I should see "Graves, Thompson and Pena" in the results
+    Then I should see "Perez LLC" in the results
+    When I press the "Clear" button
+    And I set the "Product_List" to "1"
+    And I press the "Search" button
+    Then I should see "Rogers, Cabrera and Lee" in the results
+    Then I should see "Graves, Thompson and Pena" in the results
+    Then I should see "Perez LLC" in the results
