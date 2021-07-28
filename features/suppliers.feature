@@ -42,6 +42,31 @@ Scenario: Create a Supplier
     And I should see "[1,2,3]" in the "Product_List" field
     And I should see "4" in the "Rating" field
 
+Scenario: Retrieve a Supplier
+    When I visit the "Home Page"
+    And I set the "name" to "Perez LLC"
+    And I set the "phone" to "6574-477-5210"
+    And I set the "address" to "41570 Ashley Manors\nNorth Kevinchester, FL 68266"
+    And I select "True" in the "available" dropdown
+    And I set the "product_list" to "1,2,3"
+    And I set the "rating" to "1.7"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    And the "Phone" field should be empty
+    And the "Address" field should be empty
+    And the "Product_List" field should be empty
+    And the "Rating" field should be empty
+    Then I should see "Perez LLC" in the "Name" field
+    And I should see "657-477-5265" in the "Phone" field
+    And I should see "False" in the "Available" dropdown
+    And I should see "221B Baker Street London" in the "Address" field
+    And I should see "[1,2,3]" in the "Product_List" field
+    And I should see "1.7" in the "Rating" field
+
 Scenario: Update a Supplier
     When I visit the "Home Page"
     And I set the "Name" to "Perez LLC"
