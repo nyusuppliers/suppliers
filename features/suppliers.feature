@@ -44,24 +44,24 @@ Scenario: Create a Supplier
 
 Scenario: Retrieve a Supplier
     When I visit the "Home Page"
-    And I set the "Name" to "Perez LLC"
-    And I set the "Phone" to "657-477-5265"
+    And I set the "Name" to "Bill LLC"
+    And I set the "Phone" to "888-888-8888"
     And I select "False" in the "Available" dropdown
-    And I set the "Address" to "221B Baker Street London"
+    And I set the "Address" to "888 Street Beijing"
     And I set the "Product_List" to "[1,2,3]"
-    And I set the "Rating" to "1.7"
+    And I set the "Rating" to "3"
     And I press the "Create" button
     Then I should see the message "Success"
     When I copy the "Id" field
     And I press the "Clear" button
     When I paste the "Id" field
     And I press the "Retrieve" button
-    Then I should see "Perez LLC" in the "Name" field
-    And I should see "657-477-5265" in the "Phone" field
+    Then I should see "Bill LLC" in the "Name" field
+    And I should see "888-888-8888" in the "Phone" field
     And I should see "False" in the "Available" dropdown
-    And I should see "221B Baker Street London" in the "Address" field
+    And I should see "888 Street Beijing" in the "Address" field
     And I should see "[1,2,3]" in the "Product_List" field
-    And I should see "1.7" in the "Rating" field
+    And I should see "4" in the "Rating" field
 
 
 Scenario: Update a Supplier
