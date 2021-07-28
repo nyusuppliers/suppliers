@@ -61,7 +61,7 @@ Scenario: Retrieve a Supplier
     And I should see "False" in the "Available" dropdown
     And I should see "888 Street Beijing" in the "Address" field
     And I should see "[1,2,3]" in the "Product_List" field
-    And I should see "4" in the "Rating" field
+    And I should see "3" in the "Rating" field
 
 
 Scenario: Update a Supplier
