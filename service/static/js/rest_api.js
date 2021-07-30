@@ -1,5 +1,5 @@
 $(function () {
-
+    let API_KEY = 'API_KEY';
     // ****************************************
     //  U T I L I T Y   F U N C T I O N S
     // ****************************************
@@ -58,7 +58,8 @@ $(function () {
 
         var ajax = $.ajax({
             type: "POST",
-            url: "/suppliers",
+            url: "/api/suppliers",
+            headers:{'X-Api-Key':API_KEY},
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -99,7 +100,8 @@ $(function () {
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/suppliers/" + supplier_id,
+                url: "/api/suppliers/" + supplier_id,
+                headers:{'X-Api-Key':API_KEY},
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -125,7 +127,8 @@ $(function () {
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/suppliers/" + supplier_id,
+            headers:{'X-Api-Key':API_KEY},
+            url: "/api/suppliers/" + supplier_id,
             contentType: "application/json",
             data: ''
         })
@@ -153,7 +156,8 @@ $(function () {
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/suppliers/" + supplier_id,
+            headers:{'X-Api-Key':API_KEY},
+            url: "/api/suppliers/" + supplier_id,
             contentType: "application/json",
             data: '',
         })
@@ -178,7 +182,8 @@ $(function () {
 
         var ajax = $.ajax({
             type: "PUT",
-            url: "/suppliers/" + supplier_id + "/penalize",
+            headers:{'X-Api-Key':API_KEY},
+            url: "/api/suppliers/" + supplier_id + "/penalize",
             contentType: "application/json"
         })
 
@@ -252,9 +257,7 @@ $(function () {
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/suppliers?" + queryString,
-            contentType: "application/json",
-            data: ''
+            url: "/api/suppliers?" + queryString,
         })
 
         ajax.done(function(res){
