@@ -15,6 +15,6 @@ if 'VCAP_SERVICES' in os.environ:
 # Configure SQLAlchemy
 SQLALCHEMY_DATABASE_URI = DATABASE_URI
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+API_KEY=os.getenv("API_KEY", "API_KEY")
 # Secret for session management
 SECRET_KEY = os.getenv("SECRET_KEY", "s3cr3t-key-shhhh")
