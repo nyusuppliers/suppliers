@@ -5,7 +5,7 @@ import os
 import json
 
 # Get configuration from environment
-DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:password@localhost:5432/postgres")
+DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
 
 # Overwrite if we are running in Cloud Foundry 
 if 'VCAP_SERVICES' in os.environ:
