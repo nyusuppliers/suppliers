@@ -18,7 +18,7 @@ from service.models import Supplier, DataValidationError, db
 from service import status
 
 DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
+    "DATABASE_URI", "postgres://iqlkwfgw:nExpJ04SvwoG5P1qYzo6ietwYraCamoI@chunee.db.elephantsql.com/iqlkwfgw"
 )
 CONTENT_TYPE_JSON = "application/json"
 BASE_URL = "/suppliers"
