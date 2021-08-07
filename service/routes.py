@@ -14,8 +14,10 @@ Routes:
 
 import os
 import sys
-import logging
+import logging, uuid
+from functools import wraps
 from flask import Flask, jsonify, request, url_for, make_response, abort
+from flask_restx import Api, Resource, fields, reqparse, inputs
 from flask_api import status  # HTTP Status Codes
 from werkzeug.exceptions import NotFound, UnsupportedMediaType
 
@@ -27,6 +29,15 @@ from service.models import Supplier, DataValidationError
 # Import Flask application
 from . import app
 
+# Document the type of autorization required
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Api-Key'
+    }
+}
+
 ######################################################################
 # GET INDEX
 ######################################################################
@@ -34,6 +45,94 @@ from . import app
 def index():
     """ Root URL response, load UI """
     return app.send_static_file("index.html")
+
+######################################################################
+# Configure Swagger before initializing it
+######################################################################
+api = Api(app,
+          version='1.0.0',
+          title='Supplier REST API Service',
+          description='This is a supplier api server.',
+          default='suppliers',
+          default_label='Supplier operations',
+          doc='/apidocs', # default also could use doc='/apidocs/'
+          authorizations=authorizations,
+          prefix='/api'
+         )
+
+
+# Define the model so that the docs reflect what can be sent
+create_model = api.model('Supplier', {
+    'name': fields.String(required=True,
+                          description='The name of the Supplier'),
+    'phone': fields.String(required=True,
+                          description='The phone of the supplier'),
+    'address': fields.String(required=True,
+                          description='The address of the supplier'),
+    'product_list': fields.List(fields.Integer, required=True,
+                          description='The product list of the supplier'),
+    'rating': fields.Float(required=True,
+                              description='The rating of the supplier'),
+    'available': fields.Boolean(required=True,
+                                description='Is the Supplier avaialble?')
+})
+
+supplier_model = api.inherit(
+    'SupplierModel', 
+    create_model,
+    {
+        'id': fields.String(readOnly=True,
+                            description='The unique id assigned internally by service'),
+    }
+)
+
+
+# query string arguments
+supplier_args = reqparse.RequestParser()
+supplier_args.add_argument('name', type=str, required=False, help='List Suppliers by name')
+supplier_args.add_argument('phone', type=str, required=False, help='List Suppliers by phone')
+supplier_args.add_argument('address', type=str, required=False, help='List Suppliers by address')
+supplier_args.add_argument('rating', type=float, required=False, help='List Suppliers by rating')
+supplier_args.add_argument('product_id', type=int, required=False, help='List Suppliers by product id')
+supplier_args.add_argument('available', type=inputs.boolean, required=False, help='List Suppliers by availability')
+
+######################################################################
+# Special Error Handlers
+######################################################################
+@api.errorhandler(DataValidationError)
+def request_validation_error(error):
+    """ Handles Value Errors from bad data """
+    message = str(error)
+    app.logger.error(message)
+    return {
+        'status_code': status.HTTP_400_BAD_REQUEST,
+        'error': 'Bad Request',
+        'message': message
+    }, status.HTTP_400_BAD_REQUEST
+
+
+######################################################################
+# Authorization Decorator
+######################################################################
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'X-Api-Key' in request.headers:
+            token = request.headers['X-Api-Key']
+
+        if app.config.get('API_KEY') and app.config['API_KEY'] == token:
+            return f(*args, **kwargs)
+        else:
+            return {'message': 'Invalid or missing token'}, 401
+    return decorated
+
+######################################################################
+# Function to generate a random API key (good for testing)
+######################################################################
+def generate_apikey():
+    """ Helper function used when testing API keys """
+    return uuid.uuid4().hex
 
 ######################################################################
 # LIST ALL SUPPLIERS
@@ -212,3 +311,8 @@ def item_not_found(error):
 def bad_request(error):
     return (jsonify({"status_code": status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, 
                     "error": "{}".format(error)}), status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+def abort(error_code: int, message: str):
+    """Logs errors before aborting"""
+    app.logger.error(message)
+    api.abort(error_code, message)
