@@ -1,18 +1,33 @@
 ---
 # This manifest deploys a Python Flask application with a Cloudant database
 applications:
-- name: nyu-supplier-service-sum21
-  path: .
-  instances: 1
-  memory: 128M
-  routes:
-  - route: nyu-supplier-service-sum21.us-south.cf.appdomain.cloud
-  disk_quota: 1024M
-  buildpacks: 
-  - python_buildpack
-  timeout: 180
-  services:
-  - ElephantSQL
-  env:
-    FLASK_APP : service:app
-    FLASK_DEBUG : false
+  - name: nyu-supplier-service-sum21
+    path: .
+    instances: 2
+    memory: 256M
+    routes:
+      - route: nyu-supplier-service-sum21.us-south.cf.appdomain.cloud
+    disk_quota: 1024M
+    buildpacks:
+      - python_buildpack
+    timeout: 180
+    services:
+      - ElephantSQL
+    env:
+      FLASK_APP: service:app
+      FLASK_DEBUG: false
+  - name: nyu-supplier-service-sum21-prod
+    path: .
+    instances: 2
+    memory: 256M
+    routes:
+      - route: nyu-supplier-service-sum21-prod.us-south.cf.appdomain.cloud
+    disk_quota: 1024M
+    buildpacks:
+      - python_buildpack
+    timeout: 180
+    services:
+      - ElephantSQL
+    env:
+      FLASK_APP: service:app
+      FLASK_DEBUG: false
