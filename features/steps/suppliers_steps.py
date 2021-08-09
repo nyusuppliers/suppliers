@@ -14,15 +14,15 @@ from compare import expect
 @given('the following suppliers')
 def step_impl(context):
     """ Delete all suppliers and load new ones"""
-    headers = {"Content-Type": "application/json"}
-    context.resp = requests.get(context.base_url + '/suppliers', headers=headers)
+    headers = {"Content-Type": "application/json", "X-Api-Key":"API_KEY"}
+    context.resp = requests.get(context.base_url + '/api/suppliers')
     expect(context.resp.status_code).to_equal(200)
     for supplier in context.resp.json():
-        context.resp = requests.delete(context.base_url + '/suppliers/' + str(supplier["id"]), headers=headers)
+        context.resp = requests.delete(context.base_url + '/api/suppliers/' + str(supplier["id"]), headers=headers)
         expect(context.resp.status_code).to_equal(204)
     
     # load the database with new pets
-    create_url = context.base_url + '/suppliers'
+    create_url = context.base_url + '/api/suppliers'
     for row in context.table:
         print(row)
         product_list = [int(product) for product in row['product_list'].split(",")]

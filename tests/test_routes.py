@@ -12,7 +12,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from flask_api import status  # HTTP Status Codes
 from service.models import db
-from service.routes import app, init_db
+from service.routes import app, init_db, generate_apikey
 from .factories import SupplierFactory
 from service.models import Supplier, DataValidationError, db
 from service import status
@@ -21,7 +21,7 @@ DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
 CONTENT_TYPE_JSON = "application/json"
-BASE_URL = "/suppliers"
+BASE_URL = "/api/suppliers"
 
 
 ######################################################################
@@ -36,6 +36,8 @@ class TestYourResourceServer(TestCase):
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        api_key = generate_apikey()
+        app.config['API_KEY'] = api_key
         app.logger.setLevel(logging.CRITICAL)
         Supplier.init_db(app)
 
@@ -49,6 +51,9 @@ class TestYourResourceServer(TestCase):
         db.drop_all()
         db.create_all()
         self.app = app.test_client()
+        self.headers = {
+            'X-Api-Key': app.config['API_KEY']
+        }
 
     def tearDown(self):
         """ This runs after each test """
@@ -69,7 +74,8 @@ class TestYourResourceServer(TestCase):
         supplier = SupplierFactory()
         logging.debug(supplier)
         resp = self.app.post(
-            BASE_URL, json=supplier.serialize(), content_type=CONTENT_TYPE_JSON
+            BASE_URL, json=supplier.serialize(), content_type=CONTENT_TYPE_JSON,
+                             headers=self.headers
         )
         # Check the response code is 201
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -99,7 +105,8 @@ class TestYourResourceServer(TestCase):
         for _ in range(count):
             test_supplier = SupplierFactory()
             resp = self.app.post(
-                BASE_URL, json=test_supplier.serialize(), content_type=CONTENT_TYPE_JSON
+                BASE_URL, json=test_supplier.serialize(), content_type=CONTENT_TYPE_JSON,
+                             headers=self.headers
             )
             self.assertEqual(
                 resp.status_code, status.HTTP_201_CREATED, "Could not create test supplier"
@@ -122,7 +129,7 @@ class TestYourResourceServer(TestCase):
         test_suppliers = self._create_suppliers(5)
         test_name = test_suppliers[0].name
         name_suppliers = [supplier for supplier in test_suppliers if supplier.name == test_name]
-        resp = self.app.get("/suppliers", query_string="name={}".format(test_name))
+        resp = self.app.get("/api/suppliers", query_string="name={}".format(test_name))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(name_suppliers))
@@ -134,7 +141,7 @@ class TestYourResourceServer(TestCase):
         suppliers = self._create_suppliers(5)
         test_phone = suppliers[0].phone
         phone_suppliers = [supplier for supplier in suppliers if supplier.phone == test_phone]
-        resp = self.app.get("/suppliers", query_string="phone={}".format(test_phone))
+        resp = self.app.get("/api/suppliers", query_string="phone={}".format(test_phone))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         for supplier in data:
@@ -145,7 +152,7 @@ class TestYourResourceServer(TestCase):
         suppliers = self._create_suppliers(5)
         test_address = suppliers[0].address
         address_suppliers = [supplier for supplier in suppliers if supplier.address == test_address]
-        resp = self.app.get("/suppliers", query_string="address={}".format(test_address))
+        resp = self.app.get("/api/suppliers", query_string="address={}".format(test_address))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(address_suppliers))
@@ -158,7 +165,7 @@ class TestYourResourceServer(TestCase):
         test_available = suppliers[0].available
         available_suppliers = [supplier for supplier in suppliers if \
             supplier.available == test_available]
-        resp = self.app.get("/suppliers", query_string="available={}".format(test_available))
+        resp = self.app.get("/api/suppliers", query_string="available={}".format(test_available))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(available_suppliers))
@@ -170,7 +177,7 @@ class TestYourResourceServer(TestCase):
         suppliers = self._create_suppliers(5)
         rating_limit = suppliers[0].rating
         rating_suppliers = [supplier for supplier in suppliers if supplier.rating >= rating_limit]
-        resp = self.app.get("/suppliers", query_string="rating={}".format(rating_limit))
+        resp = self.app.get("/api/suppliers", query_string="rating={}".format(rating_limit))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(rating_suppliers))
@@ -184,7 +191,7 @@ class TestYourResourceServer(TestCase):
         test_product_id = suppliers[0].product_list[0]
         all_suppliers = [supplier for supplier in suppliers if \
             test_product_id in supplier.product_list]
-        resp = self.app.get("/suppliers", query_string="product_id={}".format(test_product_id))
+        resp = self.app.get("/api/suppliers", query_string="product_id={}".format(test_product_id))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(all_suppliers))
@@ -197,8 +204,9 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(len(test_suppliers), 5)
 
         """Delete a Supplier """
-        resp = self.app.delete('/suppliers/{}'.format(test_suppliers[0].id),
-                               content_type='application/json')
+        resp = self.app.delete('/api/suppliers/{}'.format(test_suppliers[0].id),
+                               content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
 
@@ -207,8 +215,9 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_count, len(test_suppliers)-1)
 
         """Check if deleted Should return 404"""
-        resp = self.app.get('/suppliers/{}'.format(test_suppliers[0].id),\
-            content_type='application/json')
+        resp = self.app.get('/api/suppliers/{}'.format(test_suppliers[0].id),\
+            content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_deleted_supplier(self):
@@ -217,7 +226,8 @@ class TestYourResourceServer(TestCase):
         test_suppliers = self._create_suppliers(5)
         self.assertEqual(len(test_suppliers), 5)
         """Delete an already deleted Supplier"""
-        resp = self.app.delete('/suppliers/{}'.format(0), content_type='application/json')
+        resp = self.app.delete('/api/suppliers/{}'.format(0), content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
         """DB should be unchanged"""
@@ -228,7 +238,8 @@ class TestYourResourceServer(TestCase):
         """Create Suppliers"""
         test_suppliers = self._create_suppliers(2)
         resp = self.app.get(
-            "/suppliers/{}".format(test_suppliers[0].id), content_type="application/json"
+            "/api/suppliers/{}".format(test_suppliers[0].id), content_type="application/json",
+                             headers=self.headers
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -242,18 +253,20 @@ class TestYourResourceServer(TestCase):
 
     def test_get_supplier_not_found(self):
         """Get a supplier not in the db"""
-        resp = self.app.get('/suppliers/0')
+        resp = self.app.get('/api/suppliers/0')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_supplier(self):
         """Update a Supplier"""
         test_supplier = self._create_suppliers(5)[0]
         test_supplier.name = "test_update"
-        resp = self.app.put('/suppliers/{}'.format(test_supplier.id),
-                            json=test_supplier.serialize(), content_type='application/json')
+        resp = self.app.put('/api/suppliers/{}'.format(test_supplier.id),
+                            json=test_supplier.serialize(), content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        resp = self.app.get('/suppliers/{}'.format(test_supplier.id),
-                            content_type='application/json')
+        resp = self.app.get('/api/suppliers/{}'.format(test_supplier.id),
+                            content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data['name'], 'test_update')
@@ -261,8 +274,9 @@ class TestYourResourceServer(TestCase):
     def test_update_supplier_not_found(self):
         """Update a Supplier that does not exist"""
         new_supplier = SupplierFactory()
-        resp = self.app.put('/suppliers/0', json=new_supplier.serialize(),
-                            content_type='application/json')
+        resp = self.app.put('/api/suppliers/0', json=new_supplier.serialize(),
+                            content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_penalize_supplier(self):
@@ -271,8 +285,9 @@ class TestYourResourceServer(TestCase):
         old=test_supplier.rating
 
         resp = self.app.put(
-            "/suppliers/{}/penalize".format(test_supplier.id),
+            "/api/suppliers/{}/penalize".format(test_supplier.id),
             content_type="application/json",
+            headers=self.headers
         )
         #self.assertEqual(resp.status_code, status.HTTP_200_OK)
         penalized_supplier = resp.get_json()
@@ -286,7 +301,7 @@ class TestYourResourceServer(TestCase):
 ######################################################################
     def get_supplier_count(self):
         """return the number of suppliers"""
-        resp = self.app.get('/suppliers')
+        resp = self.app.get('/api/suppliers')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         logging.debug('data = %s', data)
