@@ -15,14 +15,11 @@
             <h1>Supplier REST API Service</h1>
         </div>
 
-        <div class="row">
-          <!-- Flash Message -->
-          <div class="col-sm-8 table-responsive">
-            <table class="table">
-              <tr><td>Return Status:</td><td><span id="flash-message"></span></td></tr>
-            </table>
-          </div>
-          <button class="btn btn-link pull-right" onclick="location.href='/apidocs';">API Docs</button></span>
+        <!-- Flash Message -->
+        <div class="table-responsive">
+          <table class="table">
+            <tr><td>Status:</td><td><span id="flash_message"></span></td></tr>
+          </table>
         </div>
 
         <div class="col-md-12" id="form_data">
@@ -88,6 +85,7 @@
                   <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
                   <button type="submit" class="btn btn-success" id="create-btn">Create</button>
                   <button type="submit" class="btn btn-warning" id="update-btn">Update</button>
+                  <button class="btn btn-link pull-right" onclick="location.href='/apidocs';">API Docs</button>
                 </div>
               </div>
           </div> <!-- form div -->
