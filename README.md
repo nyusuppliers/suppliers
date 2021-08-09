@@ -16,6 +16,20 @@ This project is the back end for an eCommerce web site as a RESTful microservice
 | Wenhan Zhang  | (wz1238@nyu.edu)| GMT +8
 | Zunduo Zhao   | (zz3000@nyu.edu)| GMT +8
 
+## How to access
+
+#### Running on IBM Cloud in Dev:
+
+https://nyu-supplier-service-sum21-dev.us-south.cf.appdomain.cloud
+
+#### Running on IBM Cloud in Prod:
+
+https://nyu-supplier-service-sum21.us-south.cf.appdomain.cloud
+
+#### DevOps Pipeline:
+
+https://cloud.ibm.com/devops/pipelines/4bf3eb13-4e76-4496-affe-fa81bd552499?env_id=ibm:yp:us-south
+
 ## Repository Structure
 ```
 service
