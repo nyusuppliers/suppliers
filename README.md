@@ -7,7 +7,7 @@
 
 This project is the back end for an eCommerce web site as a RESTful microservice for the Suppliers. An Supplier is a vendor from whom we get products from. This microservice supports the complete Create, Read, Update, & Delete (CRUD) lifecycle.
 
-## Team Member 
+## Team Member  
 | Name | Email | Time Zone 
 | :--- | :--- | :--- 
 | Joyce Lu      | (yl6211@nyu.edu)| GMT -5
