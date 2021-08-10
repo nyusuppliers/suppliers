@@ -1,8 +1,31 @@
 $(function () {
     let API_KEY = 'API_KEY';
+    var autoFillName = []
+        
     // ****************************************
     //  U T I L I T Y   F U N C T I O N S
     // ****************************************
+    var ajaxG = $.ajax({
+        type: "GET",
+        headers:{'X-Api-Key':API_KEY},
+        url: "/api/suppliers/",
+        contentType: "application/json",
+        data: ''
+    })
+
+    ajaxG.done(function(res){
+        autoFillName = res.name;
+        flash_message("Success")
+    });
+
+    ajaxG.fail(function(res){
+        flash_message(res.responseJSON.message)
+    });
+
+     // Implement the auto complete function while input name  
+    $( "#search_supplier_name" ).autocomplete({
+    source: autoFillName
+    });
 
     // Updates the form with data from the response
     function update_form_data(res) {
@@ -302,9 +325,5 @@ $(function () {
         });
 
     });
-        // Implement the auto complete function while input name  
-        $( "#search_supplier_name" ).autocomplete({
-            source: autoFillName
-          });
 
 })
