@@ -277,6 +277,7 @@ $(function () {
             </thead><tbody></tbody>`;
             $("#search_results table").append(header);
             var firstSupplier = "";
+            autoFillName = res.name;
             for(var i = 0; i < res.length; i++) {
                 var supplier = res[i];
                 var row = "<tr><td class='col-md-1'>"+supplier.id+"</td><td class='col-md-2'>"+supplier.name+"</td><td class='col-md-2'>"+supplier.phone+"</td><td class='col-md-2'>"+supplier.address+"</td><td class='col-md-1'>"+supplier.available+"</td><td class='col-md-2'>"+supplier.rating+"</td><td class='col-md-2'>"+JSON.stringify(supplier.product_list)+"</td></tr>";
@@ -301,5 +302,9 @@ $(function () {
         });
 
     });
+        // Implement the auto complete function while input name  
+        $( "#search_supplier_name" ).autocomplete({
+            source: autoFillName
+          });
 
 })
