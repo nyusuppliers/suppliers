@@ -3,6 +3,24 @@ $(function () {
     // ****************************************
     //  U T I L I T Y   F U N C T I O N S
     // ****************************************
+    // Implement the auto complete function while input name
+    var ajax = $.ajax({
+        type: "GET",
+        url: "/api/suppliers?" + "",
+    });
+
+    ajax.done(function(res){
+        autoFillName = res.name;
+        flash_message("Success")
+    });
+
+    ajax.fail(function(res){
+        flash_message(res.responseJSON.message)
+    });
+    
+    $( "#supplier_name" ).autocomplete({
+        source: autoFillName
+      });
 
     // Updates the form with data from the response
     function update_form_data(res) {
