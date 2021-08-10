@@ -30,6 +30,9 @@ https://nyu-supplier-service-sum21.us-south.cf.appdomain.cloud
 
 https://cloud.ibm.com/devops/pipelines/4bf3eb13-4e76-4496-affe-fa81bd552499?env_id=ibm:yp:us-south
 
+#### DevOps API Docs:
+https://nyu-supplier-service-sum21.us-south.cf.appdomain.cloud/apidocs
+
 ## Repository Structure
 ```
 service
