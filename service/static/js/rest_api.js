@@ -18,9 +18,9 @@ $(function () {
         flash_message(res.responseJSON.message)
     });
     
-    $( "#supplier_name" ).autocomplete({
-        source: autoFillName
-      });
+    // $( "#supplier_name" ).autocomplete({
+    //     source: autoFillName
+    //   });
 
     // Updates the form with data from the response
     function update_form_data(res) {
